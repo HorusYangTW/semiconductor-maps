@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>半導體全球視野 · Global Semiconductor Perspective</title>
+<style>
+:root{
+  --bg:#ffffff; --panel:#ffffff; --ink:#1c1416; --muted:#7a6d6f;
+  --border:#e9e2e3;
+  --accent:#C8102E;        /* TSMC-style red，可自行微調 */
+  --accent-dark:#9E0B24;
+  --accent-soft:#fcecec;
+  --shadow:0 12px 30px rgba(158,11,36,.10);
+  --radius:16px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;padding:52px 20px;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:Inter,"Noto Sans TC","Microsoft JhengHei",system-ui,-apple-system,"Segoe UI",sans-serif;
+  display:flex;flex-direction:column;align-items:center;
+}
+.wrap{width:100%;max-width:840px}
+
+.brand{display:flex;align-items:center;gap:16px;margin-bottom:26px}
+.logo{height:44px;width:auto;display:block}
+.logo-fallback{
+  height:44px;padding:0 14px;display:flex;align-items:center;
+  font-weight:800;letter-spacing:.06em;color:var(--accent);
+  border:2px solid var(--accent);border-radius:10px;font-size:18px;
+}
+.brand-divider{width:1px;height:34px;background:var(--border)}
+.brand-note{color:var(--muted);font-size:13px;line-height:1.4}
+
+h1{
+  font-size:34px;letter-spacing:-.02em;margin:0 0 8px;
+  color:var(--accent-dark);
+}
+.sub{color:var(--muted);margin:0 0 38px;font-size:15px;line-height:1.6}
+
+.cards{display:grid;gap:18px}
+@media(min-width:640px){.cards{grid-template-columns:1fr 1fr}}
+.card{
+  position:relative;overflow:hidden;
+  display:block;text-decoration:none;color:inherit;
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:var(--radius);padding:28px 24px;box-shadow:var(--shadow);
+  transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease;
+}
+.card::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:5px;
+  background:var(--accent);
+}
+.card:hover{transform:translateY(-3px);border-color:var(--accent);
+  box-shadow:0 16px 36px rgba(158,11,36,.16)}
+.tag{
+  display:inline-block;font-size:12px;font-weight:700;letter-spacing:.05em;
+  color:var(--accent);background:var(--accent-soft);
+  padding:4px 11px;border-radius:999px;margin-bottom:14px;text-transform:uppercase;
+}
+.card h2{font-size:19px;margin:0 0 8px;letter-spacing:-.01em}
+.card p{color:var(--muted);font-size:14px;line-height:1.6;margin:0}
+.arrow{margin-top:16px;font-size:14px;font-weight:700;color:var(--accent)}
+
+footer{margin-top:46px;color:var(--muted);font-size:12.5px;text-align:center;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="brand">
+    <!-- 把官方 logo 存成 tsmc-logo.png 放到 repo 根目錄即可自動顯示 -->
+    <img src="tsmc-logo.png" alt="TSMC" class="logo"
+         onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'logo-fallback',textContent:'TSMC'}))">
+    <div class="brand-divider"></div>
+    <div class="brand-note">Global Semiconductor<br>Perspective</div>
+  </div>
+
+  <h1>半導體全球視野</h1>
+  <p class="sub">半導體產業鏈與先進製程互動教學圖 · Interactive industry-structure explorers</p>
+
+  <div class="cards">
+    <a class="card" href="semiconductor-value-chain.html">
+      <span class="tag">Industry Structure</span>
+      <h2>半導體產業結構圖</h2>
+      <p>設計、製造、封測、設備與材料的產業鏈全景，含公司對照與可搜尋節點。</p>
+      <div class="arrow">開啟 →</div>
+    </a>
+
+    <a class="card" href="semiconductor_process_supply_chain_explorer.html">
+      <span class="tag">Process &amp; Supply Chain</span>
+      <h2>製程與產業鏈互動圖</h2>
+      <p>先進製程與先進封裝的供應鏈教學圖，逐段拆解流程與對應廠商。</p>
+      <div class="arrow">開啟 →</div>
+    </a>
+  </div>
+
+  <footer>Hosted on GitHub Pages · horusyangtw.github.io/semiconductor-maps</footer>
+</div>
+</body>
+</html>
