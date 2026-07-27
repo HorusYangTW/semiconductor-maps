@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Semiconductor Industry Structure Map</title>
+<style>
+:root{
+  --bg:#f6f7f9; --panel:#ffffff; --ink:#12181f; --ink-2:#5a6572; --line:#dfe3e8;
+  --accent:#c0392b; --design:#2f7ed8; --test:#0f8a6a;
+  --idm-bg:#fdf6e3; --layer-bg:#f0f1f3; --supp-bg:#eef4fb;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;padding:28px 20px 90px;background:var(--bg);color:var(--ink);
+  font-family:"Segoe UI",Inter,-apple-system,"Helvetica Neue",Arial,"Noto Sans TC",sans-serif;
+  font-size:14px;line-height:1.5;
+}
+.wrap{max-width:1360px;margin:0 auto}
+h1{font-size:26px;margin:0 0 4px;letter-spacing:-.02em}
+.sub{color:var(--ink-2);margin:0 0 20px;font-size:13px}
+
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:18px}
+#q{
+  flex:1;min-width:220px;max-width:380px;padding:9px 12px;border:1px solid var(--line);
+  border-radius:8px;font:inherit;font-size:13px;background:var(--panel);
+}
+#q:focus{outline:2px solid #cfe0f5;border-color:var(--design)}
+.hint{font-size:11.5px;color:var(--ink-2)}
+.mops{
+  font-size:11.5px;font-weight:600;text-decoration:none;color:var(--design);
+  border:1px solid #cfe0f5;background:#f2f7fd;border-radius:6px;padding:6px 10px;
+}
+.mops:hover{background:#e6f0fb}
+
+.tabs{display:flex;gap:6px;margin-bottom:22px;border-bottom:1px solid var(--line)}
+.tab{appearance:none;border:0;background:none;cursor:pointer;font:inherit;font-weight:600;
+  color:var(--ink-2);padding:10px 16px;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab.on{color:var(--accent);border-bottom-color:var(--accent)}
+.view{display:none}
+.view.on{display:block}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 12px;
+  cursor:pointer;transition:.15s;position:relative}
+.card:hover{border-color:var(--accent);box-shadow:0 3px 12px rgba(0,0,0,.09);transform:translateY(-1px)}
+.card h4{margin:0 0 3px;font-size:13.5px;font-weight:700}
+.card p{margin:0;font-size:11.5px;color:var(--ink-2);line-height:1.4}
+.card::after{content:"›";position:absolute;top:8px;right:10px;color:var(--line);font-size:16px;line-height:1}
+.card:hover::after{color:var(--accent)}
+
+.tax{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.branch{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+.branch>.bh{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:800;margin-bottom:4px}
+.dot{width:10px;height:10px;border-radius:50%}
+.bnote{font-size:11.5px;color:var(--ink-2);margin:0 0 14px}
+.grp{margin-bottom:14px}
+.grp:last-child{margin-bottom:0}
+.gh{font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink-2);margin-bottom:7px;padding-left:8px;border-left:3px solid var(--line)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.soc{border-style:dashed}
+
+.matrix{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px}
+.mrow{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:stretch}
+.mrow+.mrow{margin-top:14px}
+.rlabel{border-radius:8px;padding:12px 10px;display:flex;flex-direction:column;justify-content:center;
+  text-align:center;font-weight:800;font-size:13px;line-height:1.25}
+.rlabel small{display:block;font-weight:600;font-size:10.5px;opacity:.75;margin-top:4px}
+.r-vc{background:#fdecea;color:#a5281b}
+.r-idm{background:var(--idm-bg);color:#8a6a12;border:1px solid #efe0b4}
+.r-layer{background:var(--layer-bg);color:#3f4650;border:1px solid #e0e2e6}
+.r-supp{background:var(--supp-bg);color:#1c5ba6;border:1px solid #d5e3f5}
+
+.chev{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.arrow{background:#eef0f3;border:1px solid var(--line);padding:9px 14px 9px 22px;font-weight:800;
+  font-size:13px;text-align:center;
+  clip-path:polygon(0 0,calc(100% - 16px) 0,100% 50%,calc(100% - 16px) 100%,0 100%,16px 50%)}
+.stage{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:8px 0 2px;text-align:center}
+.stage div{font-size:12.5px;font-weight:700}
+.stage span{display:block;font-weight:500;font-size:11px;color:var(--ink-2)}
+.phase{display:grid;grid-template-columns:1fr 2fr;gap:10px;margin:10px 0 14px;font-size:11px;
+  font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);text-align:center}
+.phase div{padding-bottom:6px;border-bottom:2px solid var(--ink)}
+
+.box{border-radius:8px;padding:11px;border:1px solid}
+.box>.bt{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
+  text-align:center;margin-bottom:8px}
+.b-logic,.b-mem{background:#fffdf5;border-color:#eddfae}
+.b-logic .bt,.b-mem .bt{color:#a9821a}
+.b-plain{background:#fafbfc;border-color:var(--line)}
+.b-plain .bt{color:var(--ink-2)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:4px 9px;
+  font-size:11.5px;font-weight:600;cursor:pointer;transition:.12s;white-space:nowrap}
+.chip:hover{border-color:var(--accent);color:var(--accent);box-shadow:0 2px 7px rgba(0,0,0,.08)}
+.chip.tw{border-color:#e9b3ad;background:#fdf3f2;color:#9c2f22}
+.chip.tw:hover{background:#fbe8e6}
+.chip.dim{opacity:.22;filter:grayscale(1)}
+.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.cols2r{display:grid;grid-template-columns:1fr 2fr;gap:10px}
+.sub2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.divider{height:1px;background:repeating-linear-gradient(90deg,var(--line) 0 8px,transparent 8px 14px);margin:18px 0}
+.flowline{text-align:center;font-size:11px;color:var(--ink-2);margin:6px 0 0;font-style:italic}
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:16px;font-size:11.5px;color:var(--ink-2)}
+.legend b{color:var(--ink)}
+
+/* modal */
+.scrim{position:fixed;inset:0;background:rgba(15,20,26,.45);backdrop-filter:blur(2px);
+  display:none;align-items:center;justify-content:center;padding:24px;z-index:50}
+.scrim.on{display:flex}
+.modal{background:var(--panel);border-radius:14px;max-width:660px;width:100%;max-height:84vh;
+  overflow:auto;padding:24px 28px 28px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.mtop{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
+.mtop .sp{flex:1}
+.back,.close{border:0;background:#f0f1f3;border-radius:6px;height:28px;cursor:pointer;
+  font-size:12px;font-weight:700;color:var(--ink-2);line-height:1;padding:0 10px}
+.close{width:28px;padding:0;font-size:16px}
+.back:hover,.close:hover{background:#e3e5e8;color:var(--ink)}
+.modal h3{margin:0 0 2px;font-size:21px;letter-spacing:-.01em}
+.kicker{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 14px}
+.tag{font-size:11px;font-weight:700;background:#f0f1f3;color:#4a525c;border-radius:5px;padding:3px 8px}
+.tag.hl{background:#fdecea;color:#a5281b}
+.modal p{color:#333b45;font-size:13.5px}
+.modal h5{margin:18px 0 6px;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-2)}
+.modal ul{margin:6px 0 0;padding-left:18px;font-size:13px;color:#333b45}
+.modal li{margin-bottom:4px}
+.plist{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.links{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
+.lnk{text-decoration:none;font-size:12px;font-weight:700;border-radius:7px;padding:8px 13px;
+  border:1px solid var(--line);color:#33404d;background:#fafbfc}
+.lnk:hover{border-color:var(--accent);color:var(--accent)}
+.lnk.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.lnk.primary:hover{background:#a5301f;color:#fff}
+.foot{font-size:11px;color:var(--ink-2);margin-top:10px}
+
+/* ---- logos ---- */
+.lg{position:relative;display:inline-flex;align-items:center;justify-content:center;
+  width:16px;height:16px;border-radius:3px;overflow:hidden;flex:0 0 auto;
+  background:var(--c,#8a94a0);color:#fff;font-size:9px;font-weight:800;line-height:1;vertical-align:-3px}
+.lg::before{content:attr(data-i)}
+.lg img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff}
+.lg.big{width:38px;height:38px;border-radius:8px;font-size:16px}
+.chip{display:inline-flex;align-items:center;gap:6px}
+
+/* ---- concise modal ---- */
+.hero{display:flex;align-items:center;gap:12px}
+.one{font-size:15px;line-height:1.5;color:#1d242c;margin:14px 0 0;font-weight:500}
+.ptags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.ptag{font-size:11.5px;font-weight:600;background:#f4f6f8;border:1px solid #e6e9ec;
+  border-radius:6px;padding:5px 9px;color:#3c4753}
+.more{margin-top:14px;border:1px solid var(--line);background:#fafbfc;border-radius:8px;
+  padding:0;overflow:hidden}
+.more>summary{cursor:pointer;list-style:none;padding:9px 12px;font-size:11.5px;font-weight:800;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.more>summary::-webkit-details-marker{display:none}
+.more>summary::before{content:"+ ";color:var(--accent)}
+.more[open]>summary::before{content:"\2212 "}
+.more>div{padding:0 14px 12px;font-size:13px;color:#39424c}
+.more p{margin:0 0 8px}
+
+/* ---- drill-down stage ---- */
+.crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:14px;font-size:12px}
+.crumb{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:5px 10px;
+  font-weight:700;cursor:pointer;color:var(--ink-2)}
+.crumb:hover{border-color:var(--accent);color:var(--accent)}
+.crumb.on{background:var(--accent);border-color:var(--accent);color:#fff;cursor:default}
+.crumb.off{opacity:.35;pointer-events:none}
+.csep{color:var(--line);font-weight:700}
+.lvl{display:none;animation:zin .22s ease-out}
+.lvl.on{display:block}
+@keyframes zin{from{opacity:0;transform:scale(.985)}to{opacity:1;transform:none}}
+.stagegrid{display:grid;grid-template-columns:1fr 300px;gap:18px;align-items:start}
+.side{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.side h4{margin:0 0 10px;font-size:13px}
+.side dl{margin:0;font-size:12px}
+.side dt{color:var(--ink-2);font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;font-weight:800;margin-top:9px}
+.side dd{margin:1px 0 0;font-weight:700;font-size:13.5px}
+.hintbar{font-size:11.5px;color:var(--ink-2);margin:0 0 10px;font-style:italic}
+
+/* rack elevation */
+.rackwrap{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
+.rack{border:3px solid #1c232b;border-radius:4px;overflow:hidden;background:#fff}
+.ru{display:grid;grid-template-columns:34px 1fr;align-items:stretch;border-bottom:1px solid #d8dde2}
+.ru:last-child{border-bottom:0}
+.ru .un{background:#f4f6f8;border-right:2px solid #1c232b;font-size:9.5px;font-weight:800;color:#54606c;
+  display:flex;align-items:center;justify-content:center;text-align:center;line-height:1}
+.ru .ub{display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;
+  text-align:center;padding:0 6px;line-height:1.2;min-height:calc(var(--h,1) * 22px)}
+.ru[data-n] .ub,.ru[data-go] .ub{cursor:pointer}
+.ru[data-n]:hover .ub,.ru[data-go]:hover .ub{filter:brightness(.94);outline:2px solid var(--accent);outline-offset:-2px}
+.ru[data-go] .ub::after{content:" \203A";font-weight:900;opacity:.55}
+.b-empty{background:#fff;color:#c6cdd4}
+.b-mgmt{background:#fbe3dd;color:#8c4030}
+.b-pwr{background:#f5a92c;color:#4b3208}
+.b-stiff{background:#d9dde1;color:#4b545d}
+.b-comp{background:#a9d8a0;color:#2c5227}
+.b-sw{background:#37b6ee;color:#083a52}
+
+/* board / package canvases */
+.canvas{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px}
+.chassis{border:2px solid #384250;border-radius:8px;background:linear-gradient(#f7f9fb,#eef1f5);padding:14px}
+.chtitle{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#5c6773;margin-bottom:10px}
+.blk{border-radius:7px;border:1.5px solid;padding:10px 8px;text-align:center;cursor:pointer;transition:.14s;background:#fff}
+.blk:hover{box-shadow:0 4px 14px rgba(0,0,0,.12);transform:translateY(-1px)}
+.blk b{display:block;font-size:12.5px;line-height:1.25}
+.blk span{font-size:10px;color:var(--ink-2);display:block;margin-top:2px}
+.k-gpu{border-color:#4a86cd;background:#eaf2fc} .k-gpu b{color:#1c4f8f}
+.k-cpu{border-color:#7d5ba6;background:#f4eefa} .k-cpu b{color:#5a3b7d}
+.k-mem{border-color:#d8a53c;background:#fdf5e6} .k-mem b{color:#8a6413}
+.k-net{border-color:#2f9e8f;background:#e8f6f3} .k-net b{color:#186c60}
+.k-pwr{border-color:#d1782f;background:#fdf0e4} .k-pwr b{color:#8c4b12}
+.k-mut{border-color:#c3cad2;background:#f6f8fa} .k-mut b{color:#4d5761}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.grid8{display:grid;grid-template-columns:repeat(8,1fr);gap:6px}
+.trayrow{display:grid;grid-template-columns:74px 1fr 96px;gap:10px;align-items:stretch}
+.edge{display:flex;flex-direction:column;justify-content:center;gap:6px;background:#e7ebef;
+  border:1px dashed #b3bcc5;border-radius:7px;padding:8px 6px;font-size:9.5px;font-weight:800;
+  color:#5c6773;text-align:center;text-transform:uppercase;letter-spacing:.05em}
+.sochold{display:flex;flex-direction:column;gap:5px}
+.soc{background:#fdf5e6;border:1.5px solid #d8a53c;border-radius:5px;padding:5px;text-align:center;
+  font-size:9.5px;font-weight:800;color:#8a6413;cursor:pointer}
+.soc:hover{background:#f9ead0}
+.pkgboard{display:grid;grid-template-columns:1.35fr 1fr .58fr;gap:12px;align-items:stretch}
+.dieblk{border:1.5px solid #4a86cd;background:#e8f0fb;border-radius:7px;padding:16px 8px;text-align:center;cursor:pointer}
+.dieblk:hover{background:#dbe8f8;box-shadow:0 4px 14px rgba(0,0,0,.12)}
+.dieblk b{display:block;font-size:13px;color:#1c4f8f}
+.dieblk span{font-size:10px;color:#4b6d95}
+.diemap{display:grid;grid-template-columns:58px 1fr 58px;gap:7px}
+.phy{background:#e3ebf5;border:1px solid #9db6d4;border-radius:5px;display:flex;align-items:center;
+  justify-content:center;text-align:center;font-size:9px;font-weight:800;color:#31527a;padding:6px 3px;
+  writing-mode:vertical-rl;cursor:pointer}
+.phy:hover{background:#d3e0f0}
+.smgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
+.sm{background:#cfe0f4;border:1px solid #8fb2da;border-radius:3px;height:26px}
+.l2{background:#dbe6f4;border:1px dashed #7fa3cd;border-radius:5px;text-align:center;font-size:9.5px;
+  font-weight:800;color:#31527a;padding:5px;margin:6px 0;cursor:pointer}
+
+/* ---- NVL72 teardown ---- */
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:16px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.kpi b{display:block;font-size:19px;letter-spacing:-.02em}
+.kpi span{font-size:10.5px;color:var(--ink-2);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.nest{border-radius:12px;padding:14px;border:1px solid;position:relative}
+.nlab{position:absolute;top:-9px;left:14px;font-size:10px;font-weight:800;letter-spacing:.1em;
+  text-transform:uppercase;padding:1px 8px;border-radius:20px;color:#fff}
+.n1{background:#f4f6f9;border-color:#c9d2dc}   .n1>.nlab{background:#4a5766}
+.n2{background:#eef3fa;border-color:#bcd0e8;margin-top:16px} .n2>.nlab{background:#2f6db8}
+.n3{background:#f6f0fa;border-color:#d6c2e6;margin-top:16px} .n3>.nlab{background:#7d5ba6}
+.n4{background:#fff7ec;border-color:#e8cfa6;margin-top:16px} .n4>.nlab{background:#b8811f}
+.unit{background:#fff;border:1px solid var(--line);border-radius:8px;padding:9px 11px;cursor:pointer;transition:.14s}
+.unit:hover{border-color:var(--accent);box-shadow:0 3px 10px rgba(0,0,0,.09);transform:translateY(-1px)}
+.unit b{display:block;font-size:12.5px}
+.unit span{font-size:10.5px;color:var(--ink-2)}
+.urow{display:grid;gap:8px}
+.u2{grid-template-columns:repeat(2,1fr)} .u3{grid-template-columns:repeat(3,1fr)}
+.u4{grid-template-columns:repeat(4,1fr)} .u5{grid-template-columns:repeat(5,1fr)}
+.hbmrow{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.hbm{background:#fdf3e3;border:1px solid #e5c68d;border-radius:6px;padding:7px 4px;text-align:center;
+  font-size:10.5px;font-weight:800;color:#8a6413;cursor:pointer}
+.hbm:hover{background:#fbe9cc}
+.diestrip{display:grid;grid-template-columns:1fr 52px 1fr;gap:6px;align-items:stretch;margin:6px 0}
+.die{background:#e8f0fb;border:1.5px solid #6aa0dd;border-radius:6px;padding:14px 8px;text-align:center;cursor:pointer}
+.die:hover{background:#dbe8f8}
+.die b{display:block;font-size:12.5px;color:#1c4f8f}
+.die span{font-size:10px;color:#4b6d95}
+.hbi{display:flex;align-items:center;justify-content:center;background:#dce6f2;border:1px dashed #7f9dc0;
+  border-radius:6px;font-size:9px;font-weight:800;color:#3b5b80;text-align:center;line-height:1.2}
+.substrate{margin-top:8px;background:#efe6d6;border:1px solid #cdb894;border-radius:6px;
+  padding:6px;text-align:center;font-size:10.5px;font-weight:700;color:#6d5828;cursor:pointer}
+.substrate:hover{background:#e8dcc7}
+.outer{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.caption{font-size:11px;color:var(--ink-2);margin:10px 0 0;font-style:italic;text-align:center}
+.bom{width:100%;border-collapse:collapse;margin-top:14px;font-size:12.5px}
+.bom th{text-align:left;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);
+  padding:7px 9px;border-bottom:1px solid var(--line);font-weight:800}
+.bom td{padding:8px 9px;border-bottom:1px solid #eef0f2;vertical-align:top}
+.bom td:first-child{font-weight:700;white-space:nowrap}
+.bom .chips{gap:5px}
+
+@media(max-width:900px){
+  .tax,.mrow,.cols3,.chev,.stage,.cols2r,.phase{grid-template-columns:1fr}
+  .g3,.kpis,.outer,.u3,.u4,.u5{grid-template-columns:1fr 1fr}
+  .bom{font-size:11.5px}
+}
+@media print{
+  body{background:#fff;padding:0}
+  .tabs,.toolbar,.card::after{display:none}
+  .view{display:block!important;page-break-after:always}
+  .card:hover{transform:none;box-shadow:none;border-color:var(--line)}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Semiconductor Industry Structure Map</h1>
+  <p class="sub">Click any block or company for a profile and a link to its latest investor deck.</p>
+
+  <div class="toolbar">
+    <input id="q" type="search" placeholder="Filter companies&hellip; (e.g. HBM, foundry, EUV, Taiwan)">
+    <a class="mops" href="https://mops.twse.com.tw/mops/#/web/t100sb02_1" target="_blank" rel="noopener">TW MOPS &mdash; 法人說明會 index &#8599;</a>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" data-v="v1">1 &nbsp;Chip Types</button>
+    <button class="tab" data-v="v2">2 &nbsp;Value Chain</button>
+    <button class="tab" data-v="v3">3 &nbsp;Case Study: NVL72</button>
+  </div>
+
+  <!-- ============ VIEW 1 ============ -->
+  <section id="v1" class="view on">
+    <div class="tax">
+
+      <div class="branch">
+        <div class="bh"><span class="dot" style="background:var(--design)"></span>Digital</div>
+        <p class="bnote">Binary signals (0 / 1). Scales with Moore's Law &mdash; drives leading-edge capex.</p>
+
+        <div class="grp">
+          <div class="gh" style="border-color:var(--design)">Memory &mdash; stores data</div>
+          <div class="g2">
+            <div class="card" data-k="dram"><h4>DRAM</h4><p>Volatile. Loses data when power is lost.</p></div>
+            <div class="card" data-k="nand"><h4>NAND Flash</h4><p>Non-volatile. Slower, cheaper per bit.</p></div>
+          </div>
+        </div>
+
+        <div class="grp">
+          <div class="gh" style="border-color:var(--design)">Logic &mdash; computes and directs</div>
+          <div class="g2">
+            <div class="card" data-k="gpu"><h4>GPU</h4><p>Processes many tasks at once. Well suited for graphics and AI.</p></div>
+            <div class="card" data-k="cpu"><h4>CPU</h4><p>Gives directions to other chips. Processes one task at a time.</p></div>
+            <div class="card" data-k="asic"><h4>ASIC</h4><p>Designed for one specific purpose. AI accelerators, for example.</p></div>
+            <div class="card" data-k="fpga"><h4>FPGA</h4><p>Can be reprogrammed after manufacturing.</p></div>
+          </div>
+        </div>
+
+        <div class="grp">
+          <div class="gh" style="border-color:var(--design)">Integration</div>
+          <div class="card soc" data-k="soc"><h4>SoC &mdash; System on Chip</h4><p>Combines other chips onto one chip. Includes memory, CPU and GPU.</p></div>
+        </div>
+      </div>
+
+      <div class="branch">
+        <div class="bh"><span class="dot" style="background:var(--test)"></span>Analog</div>
+        <p class="bnote">Continuous signals &mdash; temperature, sound, light, power. Mature nodes, long product lives, high margins.</p>
+
+        <div class="grp">
+          <div class="gh" style="border-color:var(--test)">Core categories</div>
+          <div class="g2">
+            <div class="card" data-k="signal"><h4>Signal</h4><p>Measures real-world signals and converts them to data.</p></div>
+            <div class="card" data-k="power"><h4>Power</h4><p>Manages power in electronics: switches, battery management.</p></div>
+          </div>
+        </div>
+
+        <div class="grp">
+          <div class="gh" style="border-color:var(--test)">Adjacent categories</div>
+          <div class="g3">
+            <div class="card" data-k="mcu"><h4>MCU</h4><p>Small controller with CPU + memory + I/O on one die.</p></div>
+            <div class="card" data-k="rf"><h4>RF</h4><p>Radio front-end for 5G, Wi-Fi and satellite links.</p></div>
+            <div class="card" data-k="sensor"><h4>Sensor / MEMS</h4><p>Image sensors, accelerometers, microphones.</p></div>
+          </div>
+        </div>
+
+        <div class="grp">
+          <div class="gh" style="border-color:var(--test)">Compound semiconductors</div>
+          <div class="g2">
+            <div class="card" data-k="sic"><h4>SiC</h4><p>High-voltage power for EV traction and grid.</p></div>
+            <div class="card" data-k="gan"><h4>GaN</h4><p>High-frequency power for chargers and RF.</p></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ VIEW 2 ============ -->
+  <section id="v2" class="view">
+    <div class="matrix">
+
+      <div class="phase">
+        <div>Design</div>
+        <div>Manufacturing</div>
+      </div>
+
+      <div class="mrow">
+        <div class="rlabel r-vc">Value chain</div>
+        <div>
+          <div class="chev">
+            <div class="arrow">Upstream</div>
+            <div class="arrow">Midstream</div>
+            <div class="arrow">Downstream</div>
+          </div>
+          <div class="stage">
+            <div>Design<span>IP, architecture, layout</span></div>
+            <div>Front End<span>Wafer Fabrication</span></div>
+            <div>Back End<span>Assembly &amp; Testing</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mrow">
+        <div class="rlabel r-idm">Integrated Device Manufacturers<small>Key players (non-exhaustive)</small></div>
+        <div>
+          <div class="box b-logic" style="margin-bottom:10px">
+            <div class="bt">Logic / Analog</div>
+            <div class="chips" id="c-idm-logic"></div>
+          </div>
+          <div class="box b-mem">
+            <div class="bt">Memory</div>
+            <div class="chips" id="c-idm-mem"></div>
+          </div>
+          <div class="card" style="margin-top:10px" data-k="idm"><h4>What an IDM is</h4><p>Designs, fabricates, assembles and sells under one roof &mdash; the original industry model.</p></div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="mrow">
+        <div class="rlabel r-layer">Layer Specialisation</div>
+        <div>
+          <div class="cols3">
+            <div class="box b-plain">
+              <div class="bt">Fabless</div>
+              <div class="chips" id="c-fabless"></div>
+              <div class="card" style="margin-top:10px" data-k="fabless"><h4>Fabless</h4><p>Owns the design and the customer; rents capacity.</p></div>
+            </div>
+            <div class="box b-plain">
+              <div class="bt">Foundries</div>
+              <div class="chips" id="c-foundry"></div>
+              <div class="card" style="margin-top:10px" data-k="foundry"><h4>Foundry</h4><p>Pure-play manufacturing; the capital and yield engine of the chain.</p></div>
+            </div>
+            <div class="box b-plain">
+              <div class="bt">OSAT</div>
+              <div class="chips" id="c-osat"></div>
+              <div class="card" style="margin-top:10px" data-k="osat"><h4>OSAT</h4><p>Outsourced assembly &amp; test &mdash; packaging is now a performance lever, not a commodity.</p></div>
+            </div>
+          </div>
+          <div class="box b-plain" style="margin-top:10px">
+            <div class="bt">Design Service / ASIC houses &mdash; the bridge between fabless customers and the foundry</div>
+            <div class="chips" id="c-service"></div>
+          </div>
+          <p class="flowline">Fabless designs &rarr; Foundry fabricates wafers &rarr; OSAT packages and tests &rarr; sold to system OEMs</p>
+        </div>
+      </div>
+
+      <div class="mrow">
+        <div class="rlabel r-supp">Supporting</div>
+        <div>
+          <div class="cols2r">
+            <div class="box b-plain">
+              <div class="bt">Design enablement</div>
+              <div class="sub2">
+                <div><div class="gh">IP Core</div><div class="chips" id="c-ip"></div></div>
+                <div><div class="gh">EDA Software</div><div class="chips" id="c-eda"></div></div>
+              </div>
+              <div class="card" style="margin-top:10px" data-k="eda"><h4>IP &amp; EDA</h4><p>Three EDA vendors and one CPU IP vendor gate every advanced design.</p></div>
+            </div>
+            <div class="box b-plain">
+              <div class="bt">Manufacturing enablement</div>
+              <div class="sub2">
+                <div><div class="gh">Materials</div><div class="chips" id="c-mat"></div></div>
+                <div><div class="gh">Equipment</div><div class="chips" id="c-equip"></div></div>
+              </div>
+              <div class="card" style="margin-top:10px" data-k="equip"><h4>Materials &amp; Equipment</h4><p>Highest concentration in the chain &mdash; EUV lithography is a single-vendor monopoly.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="legend">
+        <span>Columns = process stages. Rows = business models.</span>
+        <span><span class="chip tw" style="cursor:default">Red</span> = Taiwan-headquartered</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ VIEW 3 ============ -->
+  <section id="v3" class="view">
+
+    <div class="crumbs" id="crumbs"></div>
+    <p class="hintbar" id="hintbar"></p>
+
+    <!-- L0 : RACK -->
+    <div class="lvl on" id="L0">
+      <div class="stagegrid">
+        <div class="rackwrap"><div class="rack" id="rack"></div></div>
+        <div class="side">
+          <h4 style="cursor:pointer" data-n="rack">Vera Rubin NVL72 &mdash; 48U rack <span style="color:var(--accent)">&rsaquo;</span></h4>
+          <dl>
+            <dt>GPU packages</dt><dd>72 Rubin <span style="font-weight:500;color:#5a6572">(144 dies)</span></dd>
+            <dt>CPUs</dt><dd>36 Vera, 88 Arm cores each</dd>
+            <dt>HBM4</dt><dd>20.7 TB &middot; 288 GB per package</dd>
+            <dt>LPDDR5X</dt><dd>54 TB via SOCAMM2 modules</dd>
+            <dt>NVLink 6 fabric</dt><dd>~260 TB/s aggregate</dd>
+            <dt>Scale-out</dt><dd>CX9, ~28.8 TB/s</dd>
+            <dt>Power shelves</dt><dd>4 &times; 110 kW installed</dd>
+          </dl>
+          <p class="foot" style="margin-top:12px">Rubin is scheduled for production in 2026; some figures are still moving.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- L1 : COMPUTE TRAY -->
+    <div class="lvl" id="L1">
+      <div class="canvas">
+        <div class="chassis">
+          <div class="chtitle">1U Compute Tray &mdash; top view &middot; liquid cooled</div>
+          <div class="trayrow">
+            <div class="edge" data-n="trayfront">Front I/O<br>CX9 NIC<br>NVMe</div>
+            <div class="grid2">
+              <div class="blk k-gpu" data-go="2"><b>Vera Rubin Superchip A</b><span>1 Vera CPU + 2 Rubin GPU packages &mdash; click to open</span></div>
+              <div class="blk k-gpu" data-go="2"><b>Vera Rubin Superchip B</b><span>1 Vera CPU + 2 Rubin GPU packages &mdash; click to open</span></div>
+            </div>
+            <div class="edge" data-n="trayrear">Rear<br>NVLink 6<br>blind-mate<br>+ coolant</div>
+          </div>
+          <div class="grid4" style="margin-top:10px">
+            <div class="blk k-pwr" data-n="vrm"><b>Power stages</b><span>48 V &rarr; sub-1 V</span></div>
+            <div class="blk k-mut" data-n="cold"><b>Cold plates</b><span>Direct liquid on package</span></div>
+            <div class="blk k-net" data-n="nic"><b>CX9 NIC</b><span>Scale-out Ethernet / IB</span></div>
+            <div class="blk k-mut" data-n="bmc"><b>BMC + NVMe</b><span>Management, local storage</span></div>
+          </div>
+        </div>
+        <p class="caption">2 Vera CPUs + 4 Rubin GPU packages per 1U tray &mdash; 18 trays fill the rack.</p>
+      </div>
+    </div>
+
+    <!-- L2 : SUPERCHIP BOARD -->
+    <div class="lvl" id="L2">
+      <div class="canvas">
+        <div class="chassis">
+          <div class="chtitle">Vera Rubin Superchip &mdash; board top view</div>
+          <div class="pkgboard">
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div class="blk k-gpu" data-go="3" style="flex:1"><b>Rubin GPU package 1</b><span>2 dies + 8 HBM4 &mdash; click to open</span></div>
+              <div class="blk k-gpu" data-go="3" style="flex:1"><b>Rubin GPU package 2</b><span>2 dies + 8 HBM4 &mdash; click to open</span></div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div class="blk k-cpu" data-n="vera" style="flex:1"><b>Vera CPU</b><span>88 custom Arm cores &middot; 176 threads</span></div>
+              <div class="blk k-mut" data-n="nvlinkc2c"><b>NVLink-C2C</b><span>Coherent CPU &#8596; GPU</span></div>
+            </div>
+            <div class="sochold">
+              <div class="soc" data-n="socamm2">SOCAMM2</div><div class="soc" data-n="socamm2">SOCAMM2</div>
+              <div class="soc" data-n="socamm2">SOCAMM2</div><div class="soc" data-n="socamm2">SOCAMM2</div>
+              <div class="soc" data-n="socamm2">SOCAMM2</div><div class="soc" data-n="socamm2">SOCAMM2</div>
+              <div class="soc" data-n="socamm2">SOCAMM2</div><div class="soc" data-n="socamm2">SOCAMM2</div>
+            </div>
+          </div>
+        </div>
+        <p class="caption">HBM4 sits <b>inside</b> the GPU package. LPDDR5X sits <b>outside</b>, as 8 SOCAMM2 modules &mdash; 1.5 TB per CPU.</p>
+      </div>
+    </div>
+
+    <!-- L3 : PACKAGE -->
+    <div class="lvl" id="L3">
+      <div class="canvas">
+        <div class="chassis">
+          <div class="chtitle">Rubin GPU package &mdash; CoWoS-L cross section from above</div>
+          <div class="grid4" style="gap:6px">
+            <div class="blk k-mem" data-n="hbm"><b>HBM4</b><span>36 GB 12-Hi</span></div>
+            <div class="blk k-mem" data-n="hbm"><b>HBM4</b><span>36 GB 12-Hi</span></div>
+            <div class="blk k-mem" data-n="hbm"><b>HBM4</b><span>36 GB 12-Hi</span></div>
+            <div class="blk k-mem" data-n="hbm"><b>HBM4</b><span>36 GB 12-Hi</span></div>
+          </div>
+          <div class="diestrip" style="margin:8px 0">
+            <div class="dieblk" data-go="4"><b>Rubin die 1</b><span>reticle-sized &middot; click to open</span></div>
+            <div class="hbi" data-n="hbi">NV&#8209;HBI</div>
+            <div class="dieblk" data-go="4"><b>Rubin die 2</b><span>one logical GPU</span></div>
+          </div>
+          <div class="grid4" style="gap:6px">
+            <div class="blk k-mem" data-n="hbm"><b>HBM4</b><span>36 GB 12-Hi</span></div>
+            <div class="blk k-mem" data-n="hbm"><b>HBM4</b><span>36 GB 12-Hi</span></div>
+            <div class="blk k-mem" data-n="hbm"><b>HBM4</b><span>36 GB 12-Hi</span></div>
+            <div class="blk k-mem" data-n="hbm"><b>HBM4</b><span>36 GB 12-Hi</span></div>
+          </div>
+          <div class="substrate" data-n="interposer" style="margin-top:10px">Silicon interposer (CoWoS-L) &rarr; ABF organic substrate &rarr; board</div>
+        </div>
+        <p class="caption">8 HBM4 stacks &times; 36 GB = 288 GB per package. Packaging capacity, not wafer capacity, is the bottleneck.</p>
+      </div>
+    </div>
+
+    <!-- L4 : DIE -->
+    <div class="lvl" id="L4">
+      <div class="canvas">
+        <div class="chassis">
+          <div class="chtitle">Rubin die &mdash; floorplan (schematic, not to scale)</div>
+          <div class="diemap">
+            <div class="phy" data-n="hbmphy">HBM4 PHY</div>
+            <div>
+              <div class="l2" data-n="nvlphy">NVLink 6 PHY &middot; scale-up I/O</div>
+              <div class="smgrid">
+                <div class="sm"></div><div class="sm"></div><div class="sm"></div><div class="sm"></div><div class="sm"></div><div class="sm"></div>
+                <div class="sm"></div><div class="sm"></div><div class="sm"></div><div class="sm"></div><div class="sm"></div><div class="sm"></div>
+              </div>
+              <div class="l2" data-n="l2">L2 cache &middot; on-die fabric</div>
+              <div class="smgrid">
+                <div class="sm"></div><div class="sm"></div><div class="sm"></div><div class="sm"></div><div class="sm"></div><div class="sm"></div>
+                <div class="sm"></div><div class="sm"></div><div class="sm"></div><div class="sm"></div><div class="sm"></div><div class="sm"></div>
+              </div>
+              <div class="l2" data-n="hbi">NV-HBI PHY &middot; die-to-die edge</div>
+            </div>
+            <div class="phy" data-n="hbmphy">HBM4 PHY</div>
+          </div>
+          <div class="grid4" style="margin-top:10px">
+            <div class="blk k-mut" data-n="sm"><b>SM / Tensor cores</b><span>The compute array</span></div>
+            <div class="blk k-mut" data-n="node"><b>TSMC N3-class node</b><span>Reticle-limited area</span></div>
+            <div class="blk k-mut" data-n="mask"><b>Photomask set</b><span>EUV, ~80+ layers</span></div>
+            <div class="blk k-mut" data-n="yield"><b>Yield &amp; binning</b><span>Probe test before packaging</span></div>
+          </div>
+        </div>
+        <p class="caption">This is where lithography, EDA, IP and materials all land &mdash; one die, thousands of process steps.</p>
+      </div>
+    </div>
+
+    <table class="bom">
+      <thead><tr><th>Component</th><th>Who does what &mdash; click a company</th></tr></thead>
+      <tbody>
+        <tr><td>Rubin GPU die</td><td><span class="hint">Design</span> <span class="chips" data-co="nvidia"></span> <span class="hint">&rarr; Fab</span> <span class="chips" data-co="tsmc"></span> <span class="hint">&rarr; EDA/IP</span> <span class="chips" data-co="synopsys,cadence"></span></td></tr>
+        <tr><td>HBM4 stacks</td><td><span class="chips" data-co="skhynix,micron,samsung"></span> <span class="hint">stacked DRAM, TSV-bonded, tested before assembly</span></td></tr>
+        <tr><td>Vera CPU + SOCAMM2</td><td><span class="chips" data-co="nvidia,arm,skhynix,samsung,micron"></span></td></tr>
+        <tr><td>CoWoS-L packaging</td><td><span class="chips" data-co="tsmc,ase,amkor"></span> <span class="hint">the industry's binding capacity constraint</span></td></tr>
+        <tr><td>Test (die + package + system)</td><td><span class="chips" data-co="kyec,advantest,teradyne"></span></td></tr>
+        <tr><td>Network + optics</td><td><span class="chips" data-co="nvidia,broadcom,marvell,tower"></span></td></tr>
+        <tr><td>Power delivery</td><td><span class="chips" data-co="mps,infineon,onsemi,ti"></span></td></tr>
+        <tr><td>Equipment behind it all</td><td><span class="chips" data-co="asml,amat,lam,tel,kla,asmi"></span></td></tr>
+        <tr><td>Wafers &amp; materials</td><td><span class="chips" data-co="shinetsu,sumco,entegris,jsr"></span></td></tr>
+      </tbody>
+    </table>
+
+    <p class="caption" style="margin-top:14px">One rack touches every row of the value chain map in tab 2 &mdash; design, IP, EDA, foundry, memory, packaging, test, equipment and materials.</p>
+
+  </section>
+
+</div>
+
+<div class="scrim" id="scrim"><div class="modal" id="modal"></div></div>
+
+<script>
+/* ============ SEGMENT-LEVEL CONTENT ============ */
+const SEG = {
+  dram:{k:"Memory",t:"DRAM",d:"Dynamic random-access memory. Each bit is a capacitor that leaks charge and must be refreshed thousands of times per second, so it loses everything the moment power is cut. In exchange it is fast and cheap per bit, which makes it the working memory of every computer and phone.",f:["Commodity cycle: price swings of 50%+ within a year are normal","HBM (stacked DRAM for AI accelerators) has broken away as a high-margin sub-segment","Three suppliers control the overwhelming majority of the market"],p:["samsung","skhynix","micron","nanya"]},
+  nand:{k:"Memory",t:"NAND Flash",d:"Non-volatile memory that retains data without power. Scaling is now vertical &mdash; layers are stacked (200+ layers) rather than shrunk laterally &mdash; which shifts the equipment mix toward etch and deposition rather than lithography.",f:["Slower than DRAM but far cheaper per bit; replaced hard drives in client devices","More fragmented supplier base than DRAM, so downcycles are deeper","Enterprise SSD demand is now tied to AI data-centre build-out"],p:["samsung","kioxia","skhynix","micron","wdc"]},
+  gpu:{k:"Logic",t:"GPU",d:"Graphics processing unit. Thousands of simple cores executing the same instruction across many data points at once &mdash; originally for rendering pixels, now the workhorse of AI training and inference because neural networks are mostly matrix multiplication.",f:["Value has shifted from the die to the system: HBM stacks, advanced packaging, networking","CUDA and its software ecosystem are as much a moat as the silicon","Supply is gated by CoWoS-class advanced packaging capacity, not wafer starts"],p:["nvidia","amd","intel","broadcom","marvell"]},
+  cpu:{k:"Logic",t:"CPU",d:"Central processing unit. A few powerful cores optimised for latency and branching control flow &mdash; it orchestrates the rest of the system and runs the operating system.",f:["Instruction set matters commercially: x86 (Intel, AMD) vs Arm vs RISC-V","Arm-based server CPUs from hyperscalers have eroded x86 share","Chiplet architectures let one CPU mix nodes and vendors in a single package"],p:["intel","amd","apple","qualcomm","arm"]},
+  asic:{k:"Logic",t:"ASIC",d:"Application-specific integrated circuit. Hard-wired for one workload, so it delivers far better performance per watt and per dollar than a general-purpose chip &mdash; at the cost of zero flexibility and a design cycle measured in years.",f:["Leading-edge tape-out now costs hundreds of millions of dollars","Hyperscalers use custom ASICs (TPU, Trainium, MTIA) to escape GPU pricing","Design-service firms capture the value between the customer and the foundry"],p:["broadcom","marvell","alchip","guc","socionext"]},
+  fpga:{k:"Logic",t:"FPGA",d:"Field-programmable gate array. A fabric of logic blocks and interconnect configured after manufacturing, so the same physical chip can become different circuits. Used for prototyping ASICs and in low-volume aerospace, defence and telecom equipment where a custom chip cannot be justified.",f:["Higher unit cost and power than an ASIC, but no mask cost and no design lead time","Long product lifecycles make it a stable, high-margin business","Consolidated into the two large CPU vendors"],p:["amd","intel","lattice","microchip"]},
+  soc:{k:"Integration",t:"System on Chip",d:"Multiple functional blocks &mdash; CPU, GPU, memory controller, modem, NPU, I/O &mdash; integrated onto a single die or a single package. Integration cuts board area, power and latency, which is why every phone, car domain controller and edge device is built around one.",f:["Assembled largely from licensed IP blocks; integration and software are the differentiators","Now increasingly a package of chiplets rather than one monolithic die","Advanced packaging is the enabling technology for chiplet-based SoCs"],p:["apple","qualcomm","mediatek","samsung","nvidia"]},
+  signal:{k:"Analog",t:"Signal Chain",d:"Converts between the physical world and the digital one: amplifiers, data converters (ADC/DAC), interface and timing devices. Performance depends on layout craft, device matching and process maturity rather than transistor count.",f:["Mature nodes with fully depreciated fabs; structurally high gross margins","Product lifecycles of 10&ndash;20 years; catalogues run to tens of thousands of parts","Highly fragmented end markets &mdash; industrial, auto, medical, comms"],p:["ti","adi","renesas","infineon"]},
+  power:{k:"Analog",t:"Power Management",d:"Regulates, converts and switches electrical power: PMICs, DC-DC converters, gate drivers, discretes and modules. Every added compute watt in an AI rack and every kilowatt in an EV creates power semiconductor content.",f:["AI server power delivery has become a growth market in its own right","EV traction inverters are migrating from silicon IGBT to SiC","Content per vehicle rises several-fold from ICE to BEV"],p:["infineon","onsemi","st","ti","mps"]},
+  mcu:{k:"Embedded",t:"Microcontroller",d:"A complete small computer on one die &mdash; CPU core, flash, SRAM and peripherals. Sold in the billions into appliances, motor control, automotive body electronics and industrial equipment.",f:["Automotive MCU shortages were the visible face of the 2021 supply crisis","Sticky: switching MCU vendors means rewriting embedded firmware","Mostly mature nodes, increasingly outsourced to foundries"],p:["renesas","nxp","infineon","st","microchip"]},
+  rf:{k:"Analog",t:"RF Front-End",d:"Power amplifiers, filters, switches and transceivers that get a radio signal on and off the antenna. Filter design and packaging are the hard parts, and many devices use compound semiconductors rather than silicon.",f:["Content per phone rose sharply with 5G band proliferation","Uses GaAs, SOI and bulk-acoustic-wave filter processes, not standard CMOS","Concentrated Western supply base with rising Chinese competition"],p:["qualcomm","broadcom","qorvo","skyworks","murata"]},
+  sensor:{k:"Analog",t:"Sensors / MEMS",d:"Devices that turn physical phenomena &mdash; light, motion, pressure, sound &mdash; into electrical signals. CMOS image sensors are the largest category by revenue; MEMS covers accelerometers, gyroscopes and microphones.",f:["Image sensors need specialised stacked-die processes and large dedicated fabs","Automotive ADAS is the main growth driver outside smartphones","Manufacturing often involves bespoke back-end steps"],p:["sony","samsung","onsemi","st","bosch"]},
+  sic:{k:"Compound",t:"Silicon Carbide (SiC)",d:"A wide-bandgap material that withstands far higher voltage and temperature than silicon, cutting switching losses in high-power conversion. The strategic bottleneck is the SiC boule and substrate, not the device fab.",f:["Primary use: EV traction inverters, enabling 800V architectures and faster charging","Substrate cost dominates the bill of materials; 200mm transition is the cost lever","Recent oversupply after aggressive capacity build-out against slower EV demand"],p:["onsemi","st","infineon","wolfspeed","rohm"]},
+  gan:{k:"Compound",t:"Gallium Nitride (GaN)",d:"A wide-bandgap material that switches much faster than silicon, allowing smaller magnetics and therefore dramatically smaller power supplies. Also the basis of RF power amplifiers for base stations and radar.",f:["Consumer fast chargers were the volume entry point; data-centre power is the prize","GaN-on-silicon lets devices be made in existing silicon fabs","Competes with SiC at lower voltages, with silicon above it on cost"],p:["infineon","navitas","pi","epc","innoscience"]},
+
+  idm:{k:"Business model",t:"Integrated Device Manufacturer",d:"An IDM owns the whole chain: it designs the chip, fabricates the wafer, packages and tests it, and sells it under its own brand. This was the only model until the 1980s, and it survives where process and design are co-optimised or where customers demand end-to-end accountability.",f:["Strong where the process IS the product &mdash; memory, power, analog","Fixed-cost heavy: utilisation swings hit earnings hard in a downturn","Most 'IDMs' are now hybrid, outsourcing leading-edge digital to foundries","Intel is attempting the reverse move: opening its fabs as a foundry"],p:["intel","ti","adi","infineon","st","nxp","renesas","onsemi","samsung","skhynix","micron","kioxia"]},
+  fabless:{k:"Business model",t:"Fabless",d:"Designs and sells chips but owns no fab. It buys wafers from foundries and packaging from OSATs, converting what would be capex into variable cost. This decoupling &mdash; enabled by the rise of the pure-play foundry &mdash; is the single most important structural change in the industry's history.",f:["Capital-light, R&D-heavy: high gross margin, high operating leverage","Competes on architecture, software ecosystem and time-to-market","Vulnerable to foundry allocation &mdash; in a shortage, capacity goes to the largest customers","Advanced packaging capacity is now as scarce a resource as wafer capacity"],p:["nvidia","qualcomm","broadcom","amd","marvell","mediatek","realtek","novatek"]},
+  foundry:{k:"Business model",t:"Pure-play Foundry",d:"Manufactures wafers to customers' designs and never competes with them on end products &mdash; that neutrality is the commercial foundation of the model. A leading-edge fab now costs tens of billions of dollars, so the number of firms able to stay at the frontier has fallen to a handful.",f:["Economics are driven by yield and utilisation, both of which behave like step functions","The leading edge is effectively a duopoly, and in practice close to a monopoly","Mature nodes are a separate, more competitive and more price-exposed business","Geographic concentration in Taiwan is the industry's principal systemic risk"],p:["tsmc","samsung","intel","gf","umc","smic","vis","psmc","tower"]},
+  osat:{k:"Business model",t:"OSAT &mdash; Outsourced Assembly &amp; Test",d:"Takes finished wafers, dices them, mounts the die in a package, connects it to the outside world, and tests it. Historically the low-margin end of the chain; advanced packaging has changed that, because when transistor scaling slows, putting more dies closer together becomes the main way to improve system performance.",f:["Back-end used to be labour arbitrage; 2.5D/3D packaging made it strategic","Foundries have moved into advanced packaging, competing with their own OSAT partners","CoWoS and HBM stacking capacity has been the binding constraint on AI accelerator supply","Test (probe and final test) is a distinct, equipment-intensive sub-segment"],p:["ase","amkor","jcet","spil","kyec","pti","chipmos","tfme"]},
+  eda:{k:"Supporting",t:"IP Cores &amp; EDA Software",d:"EDA tools are the software used to design, simulate, verify and lay out a chip &mdash; no modern design is possible without them. IP cores are pre-verified circuit blocks (CPU, GPU, memory interface, SerDes) licensed rather than designed in-house, so a design team can assemble rather than build from scratch.",f:["Three EDA vendors hold roughly three-quarters of the market; the tools are non-substitutable","Arm's instruction set underpins essentially all mobile and much embedded compute","RISC-V is the open-standard challenger, attractive partly for geopolitical reasons","Because the tools are US-controlled, EDA is a primary lever in export restrictions"],p:["synopsys","cadence","siemens","arm","sifive","andes","ememory"]},
+  equip:{k:"Supporting",t:"Materials &amp; Equipment",d:"The tools and inputs that make fabrication physically possible: lithography scanners, deposition and etch chambers, metrology and inspection systems, plus silicon wafers, photoresists, specialty gases and CMP slurries. This is the most concentrated layer in the entire chain.",f:["ASML is the sole supplier of EUV lithography &mdash; a genuine single point of failure","Equipment is where export controls bite hardest and most effectively","Japan dominates several materials categories (photoresist, wafers, specialty chemicals)","Equipment orders lead fab output by 12&ndash;18 months, making them a cycle indicator"],p:["asml","amat","lam","tel","kla","asmi","advantest","teradyne","shinetsu","sumco","siltronic","soitec","entegris","jsr","tok","iqe"]}
+};
+
+/* ============ COMPANY DIRECTORY ============ */
+const CO = {
+/* ---- IDM: Logic / Analog / Discrete ---- */
+intel:{n:"Intel Corporation",short:"Intel",tk:"NASDAQ: INTC",hq:"US",role:"IDM &rarr; Foundry",
+ d:"The archetypal IDM: it designs x86 processors and manufactures them in its own fabs. Since 2021 it has been splitting itself into a product company and Intel Foundry, an internal-plus-external manufacturing business, while pushing an aggressive node roadmap (Intel 4, 3, 20A, 18A) to regain process leadership.",
+ cats:["Client CPUs (Core) for notebooks and desktops","Data-centre CPUs (Xeon) and AI accelerators (Gaudi)","Intel Foundry &mdash; external wafer and advanced-packaging services","FPGAs (Altera) and networking silicon","Advanced packaging: EMIB, Foveros 3D stacking"],
+ note:"The only Western company attempting leading-edge logic manufacturing at scale. Its foundry ambitions make it simultaneously a competitor and a potential supplier to fabless firms.",
+ web:"https://www.intel.com/content/www/us/en/products/overview.html",ir:"https://www.intc.com/",q:"Intel investor relations quarterly earnings presentation slides"},
+ti:{n:"Texas Instruments",short:"Texas Instruments",tk:"NASDAQ: TXN",hq:"US",role:"IDM &mdash; Analog",
+ d:"The largest analog semiconductor company. It runs its own mature-node fabs, is mid-way through a very large 300mm capacity build-out, and sells a catalogue of roughly 80,000 parts direct to industrial and automotive customers rather than through design wins on a few large sockets.",
+ cats:["Analog power management: DC-DC converters, PMICs, gate drivers","Signal chain: amplifiers, data converters, interface, clocks","Embedded processing: MCUs and DSPs","Automotive and industrial-grade catalogue parts"],
+ note:"Its 300mm analog fabs give it a structural cost advantage over competitors still on 200mm; the trade-off is heavy capex and depressed near-term free cash flow.",
+ web:"https://www.ti.com/",ir:"https://investor.ti.com/",q:"Texas Instruments investor relations quarterly earnings presentation"},
+adi:{n:"Analog Devices",short:"Analog Devices",tk:"NASDAQ: ADI",hq:"US",role:"IDM &mdash; Analog",
+ d:"High-performance analog and mixed-signal specialist, enlarged by the acquisitions of Linear Technology and Maxim Integrated. It focuses on the demanding end of the signal chain where precision, noise and reliability matter more than price.",
+ cats:["High-precision data converters and amplifiers","Power management (Linear Technology / Maxim lines)","RF and microwave, including aerospace and defence","Industrial automation, instrumentation, healthcare","Automotive: battery management, in-cabin connectivity (A2B)"],
+ note:"Hybrid manufacturing &mdash; internal fabs for differentiated processes, foundry for the rest. Long product lifecycles make revenue less cyclical than digital, though inventory corrections still bite.",
+ web:"https://www.analog.com/",ir:"https://investor.analog.com/",q:"Analog Devices investor relations quarterly earnings presentation"},
+infineon:{n:"Infineon Technologies",short:"Infineon",tk:"FWB: IFX",hq:"Germany",role:"IDM &mdash; Power",
+ d:"Europe's largest chipmaker and the world leader in power semiconductors. Its business is built around energy conversion &mdash; anything that switches, converts or manages electricity &mdash; plus automotive microcontrollers and sensors.",
+ cats:["Power discretes and modules: IGBT, MOSFET, SiC, GaN","Automotive MCUs (AURIX) and sensors","Green Industrial Power: drives, solar, energy storage","Connected Secure Systems: security controllers, IoT MCUs","AI data-centre power delivery"],
+ note:"Content per EV and content per AI rack are its two structural growth stories. Exposed to the pace of EV adoption and to the SiC capacity cycle.",
+ web:"https://www.infineon.com/",ir:"https://www.infineon.com/cms/en/about-infineon/investor/",q:"Infineon investor relations quarterly results presentation"},
+st:{n:"STMicroelectronics",short:"STMicroelectronics",tk:"NYSE: STM",hq:"Switzerland / France-Italy",role:"IDM &mdash; Analog &amp; MCU",
+ d:"A broad-line European IDM spanning microcontrollers, power devices, analog and sensors, with a strong position in automotive and industrial. It is a leading supplier of SiC devices and runs its own 200mm and 300mm fabs plus SiC substrate capacity.",
+ cats:["STM32 general-purpose microcontrollers","Automotive MCUs, power and SiC traction devices","Analog, power management and discretes","MEMS sensors and imaging (time-of-flight, image sensors)","Secure microcontrollers and eSIM"],
+ note:"STM32 is one of the industry's stickiest embedded ecosystems. Earnings are levered to automotive and industrial inventory cycles.",
+ web:"https://www.st.com/",ir:"https://investors.st.com/",q:"STMicroelectronics investor relations quarterly results presentation"},
+nxp:{n:"NXP Semiconductors",short:"NXP",tk:"NASDAQ: NXPI",hq:"Netherlands",role:"IDM &mdash; Automotive",
+ d:"The most automotive-weighted of the large IDMs, with roughly half its revenue from vehicles. Its franchise sits in the electronic architecture of the car: processors for domain and zonal controllers, radar, in-vehicle networking and secure access.",
+ cats:["Automotive processors (S32) for ADAS and vehicle compute","Radar transceivers and sensor fusion","In-vehicle networking (CAN, LIN, Ethernet)","Secure identification: NFC, eSIM, passports, payment","Industrial and IoT MCUs and applications processors"],
+ note:"Hybrid manufacturing model. Growth is tied to electrification and to software-defined-vehicle architectures rather than to unit car sales.",
+ web:"https://www.nxp.com/",ir:"https://investors.nxp.com/",q:"NXP Semiconductors investor relations quarterly earnings presentation"},
+renesas:{n:"Renesas Electronics",short:"Renesas",tk:"TSE: 6723",hq:"Japan",role:"IDM &mdash; MCU",
+ d:"Formed from the semiconductor arms of Hitachi, Mitsubishi and NEC, Renesas is one of the top automotive MCU suppliers. It has expanded well beyond MCUs through acquisitions of analog and connectivity companies (Intersil, IDT, Dialog, Altium).",
+ cats:["Automotive MCUs and SoCs (RH850, R-Car)","General-purpose MCUs and MPUs (RA, RX, RZ)","Analog and power management","Timing, memory interface and connectivity products","Design tools and PCB software (Altium)"],
+ note:"An 'asset-light' IDM &mdash; it keeps selected fabs but outsources heavily to TSMC. Automotive inventory corrections are its main earnings swing factor.",
+ web:"https://www.renesas.com/",ir:"https://www.renesas.com/en/about/investor-relations",q:"Renesas Electronics investor relations quarterly results presentation"},
+microchip:{n:"Microchip Technology",short:"Microchip",tk:"NASDAQ: MCHP",hq:"US",role:"IDM &mdash; MCU",
+ d:"A broad embedded-control supplier built through decades of acquisitions (Atmel, Microsemi, Micrel). It sells 8-, 16- and 32-bit MCUs alongside analog, FPGA, timing and security products, mostly into fragmented industrial and automotive customers.",
+ cats:["8/16/32-bit microcontrollers (PIC, AVR, SAM)","Mixed-signal and analog support devices","FPGAs and SoC FPGAs (Microsemi/Actel line)","Timing, storage controllers, aerospace and defence products"],
+ note:"Very long-tail customer base and a large mature-node manufacturing footprint, which makes its results a widely watched proxy for broad industrial demand.",
+ web:"https://www.microchip.com/",ir:"https://www.microchip.com/en-us/about/investors",q:"Microchip Technology investor relations quarterly earnings presentation"},
+onsemi:{n:"onsemi (ON Semiconductor)",short:"onsemi",tk:"NASDAQ: ON",hq:"US",role:"IDM &mdash; Power &amp; Sensing",
+ d:"Repositioned over the last several years away from commodity discretes toward intelligent power and sensing for automotive and industrial. It is vertically integrated in silicon carbide, from substrate through to module.",
+ cats:["Silicon carbide power devices and modules (EliteSiC)","Silicon power: MOSFETs, IGBTs, modules","CMOS image sensors for automotive and industrial machine vision","Analog and mixed-signal power management"],
+ note:"One of the few players with in-house SiC substrate capacity, which matters because substrate supply and cost dominate SiC economics.",
+ web:"https://www.onsemi.com/",ir:"https://investor.onsemi.com/",q:"onsemi investor relations quarterly earnings presentation"},
+rohm:{n:"ROHM Semiconductor",short:"Rohm",tk:"TSE: 6963",hq:"Japan",role:"IDM &mdash; Power",
+ d:"Japanese IDM specialising in power devices, analog ICs and discretes, and an early mover in silicon carbide &mdash; it shipped the first commercial SiC MOSFETs and supplies SiC into EV traction and industrial drives.",
+ cats:["SiC MOSFETs, diodes and power modules","Silicon power devices and gate drivers","Analog ICs, LSI, LEDs and passive components","Automotive and industrial power management"],
+ note:"Smaller than the Western power leaders but technologically credible in SiC; a useful read on the Japanese power semiconductor cycle.",
+ web:"https://www.rohm.com/",ir:"https://www.rohm.com/ir",q:"ROHM Semiconductor investor relations financial results presentation"},
+wolfspeed:{n:"Wolfspeed",short:"Wolfspeed",tk:"NYSE: WOLF",hq:"US",role:"Materials &amp; Devices",
+ d:"A pure-play silicon carbide company, formerly Cree. It makes SiC substrates &mdash; the raw crystal wafers other power companies buy &mdash; and its own SiC power devices, and has invested heavily in 200mm SiC capacity.",
+ cats:["SiC bare and epitaxial substrates (merchant sales)","SiC MOSFETs, diodes and power modules","Materials for RF and GaN-on-SiC applications"],
+ note:"The clearest listed proxy for SiC supply-demand. Heavy capex against a slower-than-expected EV ramp has made it the sector's stress case.",
+ web:"https://www.wolfspeed.com/",ir:"https://investor.wolfspeed.com/",q:"Wolfspeed investor relations quarterly earnings presentation"},
+sony:{n:"Sony Semiconductor Solutions",short:"Sony",tk:"TSE: 6758",hq:"Japan",role:"IDM &mdash; Sensors",
+ d:"The dominant supplier of CMOS image sensors, with roughly half of the global market. It manufactures stacked sensor dies in its own fabs and supplies the flagship camera modules in most premium smartphones.",
+ cats:["CMOS image sensors for smartphones (the core business)","Automotive image sensors and LiDAR components","Industrial and security-camera sensors","Sensing for AR/VR and depth (time-of-flight)","Edge AI sensors with on-chip inference"],
+ note:"Sensor content per phone rises with multi-camera designs and larger sensor formats; automotive is the second growth leg.",
+ web:"https://www.sony-semicon.com/en/",ir:"https://www.sony.com/en/SonyInfo/IR/",q:"Sony Group investor relations quarterly results presentation semiconductor"},
+bosch:{n:"Robert Bosch",short:"Bosch",tk:"Private",hq:"Germany",role:"IDM &mdash; MEMS",
+ d:"The world's largest MEMS sensor manufacturer and a significant automotive power semiconductor producer. Unusually, it is a Tier-1 automotive supplier that also runs its own 200mm and 300mm fabs to secure its own chip supply.",
+ cats:["MEMS sensors: accelerometers, gyroscopes, pressure, environmental","Automotive power semiconductors including SiC","ASICs for its own automotive systems"],
+ note:"Private, so no listed equity &mdash; but its capacity announcements are a leading indicator for automotive semiconductor supply.",
+ web:"https://www.bosch-semiconductors.com/",ir:"https://www.bosch.com/company/annual-report/",q:"Bosch semiconductor annual report investor presentation"},
+murata:{n:"Murata Manufacturing",short:"Murata",tk:"TSE: 6981",hq:"Japan",role:"Components &amp; RF",
+ d:"The leading maker of multilayer ceramic capacitors (MLCCs) and a major supplier of RF filters and modules. Strictly a component maker rather than a chip designer, but it sits in the same bill of materials and the same cycle.",
+ cats:["MLCCs &mdash; thousands per smartphone, hundreds per EV","SAW/BAW RF filters and front-end modules","Inductors, EMI filters, connectivity modules","Battery and power components"],
+ note:"MLCC pricing and lead times are a classic early indicator of electronics demand inflections.",
+ web:"https://www.murata.com/",ir:"https://www.murata.com/en-global/about/ir",q:"Murata Manufacturing investor relations quarterly results presentation"},
+
+/* ---- IDM: Memory ---- */
+samsung:{n:"Samsung Electronics",short:"Samsung Electronics",tk:"KRX: 005930",hq:"South Korea",role:"IDM + Foundry",
+ d:"The only company that is simultaneously the largest memory maker, a top-three logic foundry, a major SoC designer and one of the biggest customers of its own chips through its handset and display businesses. Its Device Solutions division covers DRAM, NAND and Foundry.",
+ cats:["DRAM: DDR5, LPDDR, GDDR and HBM for AI accelerators","NAND flash and enterprise/client SSDs","Foundry services down to leading-edge gate-all-around nodes","Exynos application processors and image sensors (System LSI)"],
+ note:"Its dual role &mdash; foundry supplier and competing product designer &mdash; is precisely the conflict that pure-play foundries exploit commercially.",
+ web:"https://semiconductor.samsung.com/",ir:"https://www.samsung.com/global/ir/",q:"Samsung Electronics investor relations quarterly earnings presentation semiconductor"},
+skhynix:{n:"SK hynix",short:"SK hynix",tk:"KRX: 000660",hq:"South Korea",role:"IDM &mdash; Memory",
+ d:"The world's second-largest DRAM maker and, critically, the early leader in high-bandwidth memory. HBM's tight coupling to AI accelerator demand has turned what was a commodity memory business into a partly contracted, higher-margin one.",
+ cats:["DRAM: server DDR5, LPDDR, GDDR","HBM &mdash; stacked DRAM for AI GPUs and accelerators","NAND flash and enterprise SSDs (including Solidigm)","CMOS image sensors (smaller business)"],
+ note:"The purest listed exposure to the AI memory cycle. HBM capacity is sold out well in advance, which changes the usual memory pricing dynamic.",
+ web:"https://www.skhynix.com/",ir:"https://www.skhynix.com/ir/",q:"SK hynix investor relations quarterly earnings presentation HBM"},
+micron:{n:"Micron Technology",short:"Micron",tk:"NASDAQ: MU",hq:"US",role:"IDM &mdash; Memory",
+ d:"The only US-headquartered maker of both DRAM and NAND at scale, and the third member of the DRAM oligopoly. It manufactures in the US, Japan, Taiwan and Singapore, and is expanding US capacity with CHIPS Act support.",
+ cats:["DRAM: server, client, mobile, graphics and automotive","HBM for AI accelerators","NAND flash and SSDs","Specialty memory for automotive and industrial"],
+ note:"Reports on a quarterly cycle ahead of most peers, so its guidance is often the first read on the memory cycle each quarter.",
+ web:"https://www.micron.com/",ir:"https://investors.micron.com/",q:"Micron Technology investor relations quarterly earnings presentation"},
+kioxia:{n:"Kioxia Holdings",short:"Kioxia",tk:"TSE: 285A",hq:"Japan",role:"IDM &mdash; NAND",
+ d:"The former Toshiba Memory, and the company that invented NAND flash. It is a NAND pure-play, manufacturing in a long-running joint venture with SanDisk/Western Digital at the Yokkaichi and Kitakami fabs.",
+ cats:["3D NAND flash memory (BiCS)","Client and enterprise SSDs","Removable memory products"],
+ note:"A NAND-only business, so it has none of the DRAM cushion that Samsung, SK hynix and Micron enjoy &mdash; earnings swing hard with NAND pricing.",
+ web:"https://www.kioxia.com/",ir:"https://www.kioxia.com/en-jp/ir.html",q:"Kioxia investor relations quarterly financial results presentation"},
+wdc:{n:"SanDisk / Western Digital",short:"SanDisk / WD",tk:"NASDAQ: SNDK / WDC",hq:"US",role:"NAND &amp; Storage",
+ d:"Western Digital separated its flash business (SanDisk) from its hard-disk business. SanDisk holds the long-standing NAND joint venture with Kioxia; Western Digital retains HDDs, which are enjoying an AI-driven revival in nearline storage.",
+ cats:["NAND flash via the Kioxia joint venture (SanDisk)","Client and enterprise SSDs, retail flash brands","Nearline and enterprise hard disk drives (Western Digital)"],
+ note:"Useful as a paired read: SSD and HDD demand both respond to data-centre build-out, but with different cost curves.",
+ web:"https://www.sandisk.com/",ir:"https://investor.wdc.com/",q:"Western Digital SanDisk investor relations quarterly earnings presentation"},
+nanya:{n:"Nanya Technology",short:"Nanya",tk:"TWSE: 2408",hq:"Taiwan",role:"IDM &mdash; DRAM",
+ d:"Taiwan's principal DRAM maker, part of the Formosa Plastics Group. It operates a tier below the big three: it does not compete at the leading edge or in HBM, focusing instead on specialty and consumer DRAM.",
+ cats:["Commodity and specialty DRAM (DDR3, DDR4, DDR5)","Consumer, networking and industrial memory","Niche and long-lifecycle memory products"],
+ note:"A high-beta play on commodity DRAM pricing without the HBM insulation the leaders have.",
+ web:"https://www.nanya.com/",ir:"https://www.nanya.com/en/Investor",q:"Nanya Technology 南亞科 法人說明會 簡報 investor conference"},
+/* ---- Fabless ---- */
+nvidia:{n:"NVIDIA Corporation",short:"Nvidia",tk:"NASDAQ: NVDA",hq:"US",role:"Fabless",
+ d:"Originally a graphics chip company, now the platform vendor for AI compute. It sells not just the accelerator die but whole systems &mdash; GPU, HBM, NVLink interconnect, networking and the CUDA software stack &mdash; which is why its content per server rack is far larger than a chip price would suggest.",
+ cats:["Data-centre GPUs and AI accelerators (Hopper, Blackwell class)","Networking: InfiniBand and Ethernet (Mellanox), NVLink","GeForce consumer graphics","Automotive compute (DRIVE) and robotics (Jetson)","CUDA software, libraries and AI enterprise platform"],
+ note:"Manufactures at TSMC and depends on CoWoS advanced packaging and HBM supply; its capacity commentary moves the entire upstream chain.",
+ web:"https://www.nvidia.com/en-us/",ir:"https://investor.nvidia.com/",q:"NVIDIA investor relations quarterly earnings presentation CFO commentary"},
+amd:{n:"Advanced Micro Devices",short:"AMD",tk:"NASDAQ: AMD",hq:"US",role:"Fabless",
+ d:"The x86 challenger to Intel and the second source of merchant AI GPUs. Its chiplet architecture &mdash; splitting a processor into multiple small dies on different nodes &mdash; was the key technical bet that let a fabless company out-execute an IDM on CPUs.",
+ cats:["Server CPUs (EPYC) and client CPUs (Ryzen)","Data-centre AI accelerators (Instinct MI series)","Radeon graphics and semi-custom console chips","FPGAs and adaptive SoCs (Xilinx)","Embedded and networking silicon (Pensando)"],
+ note:"Entirely dependent on TSMC for leading-edge wafers and on the same advanced-packaging and HBM pools as Nvidia.",
+ web:"https://www.amd.com/",ir:"https://ir.amd.com/",q:"AMD investor relations quarterly earnings presentation slides"},
+qualcomm:{n:"Qualcomm",short:"Qualcomm",tk:"NASDAQ: QCOM",hq:"US",role:"Fabless + Licensing",
+ d:"Two businesses in one: QCT sells Snapdragon chipsets and modems, while QTL licenses its cellular standard-essential patents and collects royalties on handsets regardless of whose chip is inside. The licensing arm carries very high margins and underwrites R&D.",
+ cats:["Snapdragon smartphone SoCs and 5G modems","RF front-end modules and antenna systems","Automotive: Snapdragon Digital Chassis, cockpit and ADAS","IoT, PC (Snapdragon X) and XR platforms","QTL patent licensing on 3G/4G/5G"],
+ note:"Diversifying away from a concentrated handset customer base into automotive and PC; the licensing model is periodically challenged in litigation and regulation.",
+ web:"https://www.qualcomm.com/",ir:"https://investor.qualcomm.com/",q:"Qualcomm investor relations quarterly earnings presentation"},
+broadcom:{n:"Broadcom",short:"Broadcom",tk:"NASDAQ: AVGO",hq:"US",role:"Fabless + Software",
+ d:"A disciplined acquirer that combines high-share semiconductor franchises with enterprise infrastructure software (CA, Symantec, VMware). In semiconductors it is the leading merchant supplier of data-centre networking silicon and the largest custom AI ASIC partner for hyperscalers.",
+ cats:["Ethernet switching and routing silicon (Tomahawk, Jericho)","Custom AI accelerators (XPUs) designed with hyperscalers","Optical, SerDes and PCIe connectivity","Wireless: RF filters and connectivity for smartphones","Storage controllers and broadband access","Infrastructure software (VMware)"],
+ note:"The main structural competitor to merchant GPUs: every custom ASIC it ships is a GPU a hyperscaler did not buy.",
+ web:"https://www.broadcom.com/",ir:"https://investors.broadcom.com/",q:"Broadcom investor relations quarterly earnings presentation"},
+marvell:{n:"Marvell Technology",short:"Marvell",tk:"NASDAQ: MRVL",hq:"US",role:"Fabless",
+ d:"A data-infrastructure specialist covering the connections inside and between data centres, and the second major custom AI silicon house alongside Broadcom. Its franchise sits in optical DSPs, SerDes and high-speed interconnect.",
+ cats:["Custom AI accelerators and compute ASICs for hyperscalers","Optical DSPs and electro-optics for data-centre interconnect","Ethernet switching and PHYs","Storage controllers and enterprise SSD controllers","Automotive Ethernet and carrier infrastructure"],
+ note:"Leveraged to data-centre interconnect bandwidth, which grows faster than compute itself as clusters scale out.",
+ web:"https://www.marvell.com/",ir:"https://investor.marvell.com/",q:"Marvell Technology investor relations quarterly earnings presentation"},
+mediatek:{n:"MediaTek Inc.",short:"MediaTek",tk:"TWSE: 2454",hq:"Taiwan",role:"Fabless",
+ d:"The largest fabless company in Taiwan and one of the two dominant smartphone SoC vendors by unit volume. It built share from the low end upward and now competes at the flagship tier with the Dimensity line, while diversifying into TV, connectivity, automotive and ASIC.",
+ cats:["Dimensity smartphone SoCs across entry to flagship tiers","Smart TV and set-top-box SoCs (a long-held leading share)","Wi-Fi, Bluetooth and connectivity chipsets","Automotive cockpit and connectivity platforms","Custom ASIC and data-centre silicon initiatives","Power management ICs"],
+ note:"A key Taiwanese bellwether for consumer electronics demand; its Chinese handset exposure makes it sensitive to that market's inventory cycle.",
+ web:"https://www.mediatek.com/",ir:"https://www.mediatek.com/investor-relations",q:"MediaTek 聯發科 法人說明會 investor conference presentation"},
+realtek:{n:"Realtek Semiconductor",short:"Realtek",tk:"TWSE: 2379",hq:"Taiwan",role:"Fabless",
+ d:"A high-volume, broad-catalogue fabless designer best known for the audio codecs and Ethernet controllers that appear in a very large share of PCs and motherboards, plus networking and switch silicon.",
+ cats:["PC audio codecs and Ethernet controllers","Network switch and router SoCs, PON and broadband","Wi-Fi and Bluetooth connectivity","Multimedia: TV, display and camera SoCs","Automotive Ethernet and infotainment components"],
+ note:"Very broad, low-ASP portfolio &mdash; a good read on PC and consumer networking volumes rather than on AI.",
+ web:"https://www.realtek.com/",ir:"https://www.realtek.com/en/investor-relations",q:"Realtek 瑞昱 法人說明會 investor conference presentation"},
+novatek:{n:"Novatek Microelectronics",short:"Novatek",tk:"TWSE: 3034",hq:"Taiwan",role:"Fabless",
+ d:"A display-driver specialist: it designs the chips that translate a video signal into the voltages that drive each pixel. It is a top supplier of display driver ICs and touch-and-display integrated controllers, plus a growing SoC business.",
+ cats:["Display driver ICs (DDI) for LCD and OLED panels","Touch and display driver integration (TDDI)","Timing controllers (TCON)","System-on-chip for TVs, monitors and image processing"],
+ note:"Tightly coupled to the panel cycle and to smartphone and TV build rates; a large consumer of mature-node foundry capacity.",
+ web:"https://www.novatek.com.tw/",ir:"https://www.novatek.com.tw/en-global/Html/ir_overview",q:"Novatek 聯詠 法人說明會 investor conference presentation"},
+apple:{n:"Apple Inc.",short:"Apple (silicon)",tk:"NASDAQ: AAPL",hq:"US",role:"Captive Fabless",
+ d:"Not a merchant chip vendor &mdash; it designs silicon exclusively for its own products. It is nonetheless one of the most important actors in the chain because it is consistently the first and largest customer for each new leading-edge node.",
+ cats:["A-series iPhone and iPad SoCs","M-series Mac and iPad processors","C-series cellular modems, and in-house wireless silicon","Custom power management, display and sensor controllers"],
+ note:"Its node commitments effectively fund the first year of each new TSMC process; its product cycle drives a large share of leading-edge wafer demand.",
+ web:"https://www.apple.com/",ir:"https://investor.apple.com/",q:"Apple investor relations quarterly results financial statements"},
+lattice:{n:"Lattice Semiconductor",short:"Lattice",tk:"NASDAQ: LSCC",hq:"US",role:"Fabless &mdash; FPGA",
+ d:"The small-FPGA specialist. Rather than compete with AMD and Intel on the largest devices, it focuses on low-power, small-form-factor programmable logic used for control, security and interface bridging in servers, comms and industrial systems.",
+ cats:["Low-power FPGAs (iCE, CrossLink, Certus, Avant families)","Platform firmware security and root-of-trust devices","Video and sensor bridging","Industrial automation and automotive interfaces"],
+ note:"Higher gross margin than the large FPGA franchises because it avoids the leading edge and sells into design-win-driven niches.",
+ web:"https://www.latticesemi.com/",ir:"https://investor.latticesemi.com/",q:"Lattice Semiconductor investor relations quarterly earnings presentation"},
+qorvo:{n:"Qorvo",short:"Qorvo",tk:"NASDAQ: QRVO",hq:"US",role:"Fabless / Fab-lite &mdash; RF",
+ d:"An RF front-end supplier formed from the merger of RFMD and TriQuint. It makes power amplifiers, filters and switch modules for smartphones, plus defence and infrastructure RF using GaAs and GaN processes in its own specialty fabs.",
+ cats:["Smartphone RF front-end modules and power amplifiers","BAW/SAW filters","Defence and aerospace RF (GaN)","Wi-Fi, ultra-wideband and IoT connectivity","Power management and motor control"],
+ note:"Highly exposed to a small number of flagship handset programmes, which makes revenue lumpy by quarter.",
+ web:"https://www.qorvo.com/",ir:"https://ir.qorvo.com/",q:"Qorvo investor relations quarterly earnings presentation"},
+skyworks:{n:"Skyworks Solutions",short:"Skyworks",tk:"NASDAQ: SWKS",hq:"US",role:"Fabless / Fab-lite &mdash; RF",
+ d:"An analog and RF specialist whose largest business is front-end modules for smartphones, with a broad markets segment covering automotive, industrial, infrastructure and IoT connectivity.",
+ cats:["RF front-end modules, filters and amplifiers for handsets","Wi-Fi and connectivity front ends","Automotive connectivity and infotainment RF","Timing, isolation and analog components"],
+ note:"Like Qorvo, its results are dominated by content and share on flagship handset platforms.",
+ web:"https://www.skyworksinc.com/",ir:"https://investors.skyworksinc.com/",q:"Skyworks Solutions investor relations quarterly earnings presentation"},
+mps:{n:"Monolithic Power Systems",short:"MPS",tk:"NASDAQ: MPWR",hq:"US",role:"Fabless &mdash; Power",
+ d:"A fabless analog company that broke the assumption that power management requires owning a fab. It integrates power devices and control into single modules, and has become a significant supplier of power delivery for AI servers and GPUs.",
+ cats:["DC-DC converters, PMICs and power modules","Server and AI accelerator power delivery","Automotive power and lighting","Industrial, consumer and communications power"],
+ note:"Its content grows with rack power, making it an indirect but leveraged way to track AI data-centre build-out.",
+ web:"https://www.monolithicpower.com/",ir:"https://ir.monolithicpower.com/",q:"Monolithic Power Systems investor relations quarterly earnings presentation"},
+navitas:{n:"Navitas Semiconductor",short:"Navitas",tk:"NASDAQ: NVTS",hq:"US",role:"Fabless &mdash; GaN/SiC",
+ d:"A pure-play wide-bandgap company built around GaN power ICs that integrate the switch with its drive and protection circuitry, plus a SiC line acquired from GeneSiC. Entry market was mobile fast chargers; the strategic target is data-centre and EV power.",
+ cats:["GaNFast integrated gallium nitride power ICs","GeneSiC silicon carbide devices","Data-centre and AI power supply reference designs","EV onboard chargers and solar inverters"],
+ note:"Small and pre-scale &mdash; a high-risk, high-beta proxy for GaN adoption rather than a diversified power supplier.",
+ web:"https://navitassemi.com/",ir:"https://ir.navitassemi.com/",q:"Navitas Semiconductor investor relations quarterly earnings presentation"},
+pi:{n:"Power Integrations",short:"Power Integrations",tk:"NASDAQ: POWI",hq:"US",role:"Fabless &mdash; Power",
+ d:"Specialises in high-voltage integrated circuits for AC-DC power conversion, integrating the switch and controller into a single chip to cut the component count of a power supply. Also a supplier of high-voltage gate drivers for industrial and traction applications.",
+ cats:["AC-DC power conversion ICs (InnoSwitch)","GaN-based high-voltage switches","Gate drivers for IGBT and SiC modules","Motor-drive ICs for appliances"],
+ note:"Long-cycle, design-win driven, with exposure to appliances, industrial and increasingly high-voltage traction.",
+ web:"https://www.power.com/",ir:"https://investors.power.com/",q:"Power Integrations investor relations quarterly earnings presentation"},
+epc:{n:"Efficient Power Conversion",short:"EPC",tk:"Private",hq:"US",role:"GaN devices",
+ d:"A pioneer of enhancement-mode GaN-on-silicon transistors, focused on very high-frequency, high-efficiency power conversion in applications such as LiDAR, robotics, satellites and data-centre power.",
+ cats:["eGaN FETs and integrated circuits","LiDAR and time-of-flight pulse drivers","High-density DC-DC conversion","Space and radiation-hardened GaN"],
+ note:"Private and small, but technically influential in defining the GaN device category.",
+ web:"https://epc-co.com/epc",ir:"https://epc-co.com/epc/about-epc",q:"Efficient Power Conversion EPC GaN company overview"},
+innoscience:{n:"Innoscience Technology",short:"Innoscience",tk:"HKEX: 2577",hq:"China",role:"IDM &mdash; GaN",
+ d:"A vertically integrated GaN-on-silicon manufacturer operating 8-inch GaN production lines &mdash; unusual in a field where most players are fabless or use foundry capacity. It competes primarily on cost and volume in consumer and increasingly in data-centre power.",
+ cats:["8-inch GaN-on-Si power devices","Low- and high-voltage GaN transistors","Consumer fast charging, data-centre and automotive power"],
+ note:"Represents the cost-down, capacity-led Chinese challenge in wide-bandgap power.",
+ web:"https://www.innoscience.com/",ir:"https://www.innoscience.com/en/investor",q:"Innoscience Technology investor relations results presentation GaN"},
+socionext:{n:"Socionext",short:"Socionext",tk:"TSE: 6526",hq:"Japan",role:"Design service / ASIC",
+ d:"Formed from the LSI businesses of Fujitsu and Panasonic, Socionext is a fabless custom SoC house. It does not sell standard products; it co-designs application-specific SoCs with customers and delivers them through foundry and OSAT partners.",
+ cats:["Custom SoC design and turnkey supply","Automotive: ADAS, imaging, display SoCs","Data centre and networking custom silicon","Advanced packaging and chiplet integration services"],
+ note:"Competes with Alchip, GUC and the ASIC arms of Broadcom and Marvell for custom silicon programmes.",
+ web:"https://www.socionext.com/en/",ir:"https://www.socionext.com/en/ir/",q:"Socionext investor relations financial results presentation"},
+
+/* ---- Foundry ---- */
+tsmc:{n:"Taiwan Semiconductor Manufacturing Company",short:"TSMC",tk:"TWSE: 2330 / NYSE: TSM",hq:"Taiwan",role:"Pure-play Foundry",
+ d:"The company that created the pure-play foundry model and the structural centre of the modern industry. It manufactures for almost every major fabless firm, holds a commanding share of leading-edge logic, and has extended its franchise into advanced packaging, which is now as scarce a resource as wafers.",
+ cats:["Leading-edge logic: 5nm, 3nm and 2nm-class nodes","Mature and specialty nodes for analog, MCU, display driver, RF","Advanced packaging: CoWoS, InFO, SoIC 3D stacking","Ecosystem services: IP, EDA qualification, design enablement","Overseas fabs in Arizona, Kumamoto and Dresden"],
+ note:"Its monthly revenue, quarterly guidance and capex plan are the single most-watched data set in the sector. Concentration of leading-edge capacity in Taiwan is the industry's core geopolitical risk.",
+ web:"https://www.tsmc.com/english",ir:"https://investor.tsmc.com/english",q:"TSMC investor conference quarterly results presentation slides"},
+gf:{n:"GlobalFoundries",short:"GlobalFoundries",tk:"NASDAQ: GFS",hq:"US",role:"Foundry &mdash; specialty",
+ d:"Spun out of AMD's manufacturing operations, GlobalFoundries exited the leading-edge race in 2018 and repositioned as a specialty foundry. It competes on differentiated processes &mdash; RF-SOI, FDX, embedded memory, silicon photonics &mdash; and on manufacturing in the US, Europe and Singapore.",
+ cats:["RF-SOI for smartphone front ends","22FDX / FD-SOI low-power platforms","Automotive and industrial mature-node processes","Embedded non-volatile memory and silicon photonics"],
+ note:"The main Western 'trusted supply' foundry for defence, automotive and RF customers who do not need the leading edge.",
+ web:"https://gf.com/",ir:"https://investors.gf.com/",q:"GlobalFoundries investor relations quarterly earnings presentation"},
+umc:{n:"United Microelectronics Corporation",short:"UMC",tk:"TWSE: 2303 / NYSE: UMC",hq:"Taiwan",role:"Foundry &mdash; mature node",
+ d:"Taiwan's second foundry. Like GlobalFoundries it stopped chasing the leading edge and now concentrates on mature and specialty nodes &mdash; 28nm and above &mdash; where it serves display drivers, image sensors, MCUs, power management and RF.",
+ cats:["Mature-node logic (28nm/22nm and above)","Specialty: display driver, CIS, embedded memory, BCD power","RF-SOI and connectivity processes","Capacity in Taiwan, Singapore, China and Japan"],
+ note:"A direct read on mature-node utilisation and pricing, where Chinese capacity additions are the main competitive pressure.",
+ web:"https://www.umc.com/",ir:"https://www.umc.com/en/IR/ir_overview",q:"UMC 聯電 investor conference quarterly results presentation"},
+smic:{n:"Semiconductor Manufacturing International Corp",short:"SMIC",tk:"SSE: 688981 / HKEX: 981",hq:"China",role:"Foundry",
+ d:"China's largest foundry and the focal point of its domestic self-sufficiency effort. Export controls block its access to EUV lithography, so its leading-edge progress relies on multi-patterning with DUV tools, which limits yield and cost efficiency at advanced nodes.",
+ cats:["Mature-node logic for consumer, power and display","Advanced nodes constrained by equipment access","Specialty processes: BCD, RF, CIS, embedded memory"],
+ note:"Its capacity additions at mature nodes are the principal source of price pressure on UMC, VIS, PSMC and GlobalFoundries.",
+ web:"https://www.smics.com/en/",ir:"https://www.smics.com/en/site/company_investor",q:"SMIC investor relations quarterly results presentation"},
+vis:{n:"Vanguard International Semiconductor",short:"VIS",tk:"TWSE: 5347",hq:"Taiwan",role:"Foundry &mdash; specialty",
+ d:"A specialty foundry majority-associated with TSMC, focused on 8-inch mature-node production for power management, display driver and mixed-signal customers. It is building 12-inch specialty capacity in Singapore in a joint venture with NXP.",
+ cats:["8-inch specialty foundry: power management ICs, BCD","Display driver and small-panel driver processes","Discrete power devices and mixed-signal","New 12-inch specialty capacity (Singapore JV)"],
+ note:"A focused read on 8-inch utilisation and analog/power demand, without leading-edge capex exposure.",
+ web:"https://www.vis.com.tw/en",ir:"https://www.vis.com.tw/en/ir",q:"Vanguard International Semiconductor 世界先進 investor conference presentation"},
+psmc:{n:"Powerchip Semiconductor Manufacturing Corp",short:"PSMC",tk:"TWSE: 6770",hq:"Taiwan",role:"Foundry &mdash; specialty",
+ d:"A Taiwanese foundry with roots in DRAM manufacturing, now offering memory and specialty logic foundry services. Its heritage gives it strength in memory processes, and it also licenses fab technology and operates joint ventures in China and Japan.",
+ cats:["Memory foundry: DRAM and niche memory processes","Specialty logic: power, display driver, CIS","Foundry technology transfer and fab services"],
+ note:"Highly geared to mature-node pricing; the memory-process heritage differentiates it from UMC and VIS.",
+ web:"https://www.powerchip.com/en-global",ir:"https://www.powerchip.com/en-global/investors/investor-conference",q:"Powerchip PSMC 力積電 法人說明會 investor conference presentation"},
+tower:{n:"Tower Semiconductor",short:"Tower",tk:"NASDAQ: TSEM",hq:"Israel",role:"Foundry &mdash; analog specialty",
+ d:"A specialty analog foundry rather than a digital one. It supplies process platforms that most large foundries treat as marginal &mdash; RF-SOI, SiGe, silicon photonics, power BCD, MEMS and image sensors &mdash; often to customers who need process customisation.",
+ cats:["RF-SOI and SiGe for RF front ends and infrastructure","Silicon photonics for optical transceivers","Power management (BCD) and discrete processes","CMOS image sensors and MEMS","Displays and non-imaging sensors"],
+ note:"Silicon photonics exposure ties part of its business to data-centre optical interconnect growth.",
+ web:"https://towersemi.com/",ir:"https://towersemi.com/investor-relations/",q:"Tower Semiconductor investor relations quarterly earnings presentation"},
+
+/* ---- Design service / ASIC ---- */
+alchip:{n:"Alchip Technologies",short:"Alchip",tk:"TWSE: 3661",hq:"Taiwan",role:"Design service / ASIC",
+ d:"A high-end ASIC design-service house. Customers bring the architecture; Alchip does physical implementation, sign-off, packaging design and turnkey production through TSMC and OSAT partners, which lets hyperscalers and AI start-ups build custom silicon without an internal back-end team.",
+ cats:["Leading-edge ASIC physical design and turnkey delivery","HPC and AI accelerator implementation","2.5D/3D advanced packaging and chiplet design","High-speed SerDes and interface integration"],
+ note:"One of the clearest listed proxies for custom AI silicon programmes outside the US majors.",
+ web:"https://www.alchip.com/en",ir:"https://www.alchip.com/en/Investors/financials/seminar",q:"Alchip 世芯 法人說明會 investor conference presentation"},
+guc:{n:"Global Unichip Corporation",short:"GUC",tk:"TWSE: 3443",hq:"Taiwan",role:"Design service / ASIC",
+ d:"An ASIC design-service company whose largest shareholder is TSMC, and which uses TSMC as its sole foundry. That relationship gives it early access to new process and packaging technologies, which it packages into spec-in, SoC integration and turnkey manufacturing services.",
+ cats:["Turnkey ASIC design and production services","SoC integration and physical implementation","Advanced packaging and chiplet interfaces","High-speed interface IP (SerDes, HBM PHY)"],
+ note:"Positioned as TSMC's design-service arm in practice; benefits directly from advanced-node and advanced-packaging adoption.",
+ web:"https://www.guc-asic.com/en",ir:"https://www.guc-asic.com/en/investor",q:"Global Unichip GUC 創意電子 法人說明會 investor conference presentation"},
+/* ---- OSAT ---- */
+ase:{n:"ASE Technology Holding",short:"ASE Group",tk:"TWSE: 3711 / NYSE: ASX",hq:"Taiwan",role:"OSAT",
+ d:"The world's largest outsourced assembly and test provider, formed by combining ASE with SPIL. It spans everything from commodity wire-bond packaging to leading-edge fan-out and 2.5D solutions, and also runs a large electronic manufacturing services arm (USI).",
+ cats:["Wire-bond and flip-chip packaging","Advanced packaging: fan-out, FOCoS, 2.5D/3D integration","Wafer-level packaging and bumping","Final test and system-level test","Electronic manufacturing services (USI) &mdash; modules and systems"],
+ note:"Its advanced-packaging commentary is the best listed read on back-end AI capacity outside TSMC's own CoWoS lines.",
+ web:"https://www.aseglobal.com/",ir:"https://ir.aseglobal.com/",q:"ASE Technology 日月光 investor conference presentation quarterly results"},
+spil:{n:"Siliconware Precision Industries",short:"SPIL",tk:"Part of ASE",hq:"Taiwan",role:"OSAT",
+ d:"Historically Taiwan's second-largest packaging and test house, now a subsidiary within ASE Technology Holding. It retains its own fabs and customer relationships, with strength in flip-chip and wafer-level packaging.",
+ cats:["Flip-chip and bump packaging","Wafer-level chip-scale packaging","Fan-out packaging","Wafer sort and final test"],
+ note:"No longer separately listed &mdash; follow it through ASE Technology Holding's results.",
+ web:"https://www.spil.com.tw/",ir:"https://ir.aseglobal.com/",q:"SPIL 矽品 ASE Technology investor conference presentation"},
+amkor:{n:"Amkor Technology",short:"Amkor",tk:"NASDAQ: AMKR",hq:"US",role:"OSAT",
+ d:"The largest US-headquartered OSAT and the main Western alternative to the Taiwanese packagers. It has particular strength in automotive and communications packaging and is building an advanced-packaging facility in Arizona alongside US fab investment.",
+ cats:["Flip-chip and wire-bond packaging","Wafer-level and fan-out packaging","System-in-package modules for smartphones and automotive","Test services","Advanced SiP and 2.5D integration"],
+ note:"Positioned to benefit from the reshoring of back-end capacity, which historically lagged front-end reshoring by several years.",
+ web:"https://amkor.com/",ir:"https://ir.amkor.com/",q:"Amkor Technology investor relations quarterly earnings presentation"},
+jcet:{n:"JCET Group",short:"JCET",tk:"SSE: 600584",hq:"China",role:"OSAT",
+ d:"China's largest packaging and test company and a global top-three OSAT, enlarged by its acquisition of STATS ChipPAC. It serves both domestic Chinese fabless customers and international clients, and is investing in advanced packaging capability.",
+ cats:["Wire-bond, flip-chip and wafer-level packaging","System-in-package and module assembly","Advanced fan-out and 2.5D development","Wafer probe and final test"],
+ note:"Central to China's domestic back-end self-sufficiency effort; back-end packaging faces fewer export restrictions than front-end lithography.",
+ web:"https://www.jcetglobal.com/en",ir:"https://www.jcetglobal.com/en/investor",q:"JCET Group 长电科技 investor relations results presentation"},
+kyec:{n:"King Yuan Electronics",short:"KYEC",tk:"TWSE: 2449",hq:"Taiwan",role:"Test house",
+ d:"The largest independent semiconductor test company. Unlike full-service OSATs it concentrates on the test half of the back end &mdash; wafer probe, final test and burn-in &mdash; which makes it an equipment-heavy business tied to tester utilisation.",
+ cats:["Wafer probe (CP) testing","Final test of packaged devices","Burn-in and reliability testing","Test programme development and engineering services"],
+ note:"Test intensity rises with die complexity, so AI and HPC devices consume disproportionately more test time per unit &mdash; a structural tailwind.",
+ web:"https://www.kyec.com.tw/en",ir:"https://www.kyec.com.tw/en/Ir/EarningsCall",q:"King Yuan Electronics 京元電子 法人說明會 investor conference presentation"},
+pti:{n:"Powertech Technology Inc.",short:"PTI",tk:"TWSE: 6239",hq:"Taiwan",role:"OSAT &mdash; memory",
+ d:"A packaging and test house with an unusually strong memory franchise: it packages and tests DRAM and NAND for the major memory makers, and has extended into logic packaging and HBM-related processes.",
+ cats:["Memory packaging and test (DRAM, NAND, SSD)","Logic wafer bumping and flip-chip","Wafer-level packaging","Memory module and SSD assembly"],
+ note:"The most memory-levered of the Taiwanese OSATs, so its results track the DRAM/NAND cycle more than the AI logic cycle.",
+ web:"https://www.pti.com.tw/en/",ir:"https://www.pti.com.tw/en/investors",q:"Powertech Technology 力成科技 法人說明會 investor conference presentation"},
+chipmos:{n:"ChipMOS Technologies",short:"ChipMOS",tk:"TWSE: 8150 / NASDAQ: IMOS",hq:"Taiwan",role:"OSAT &mdash; display &amp; memory",
+ d:"A specialist in packaging and testing display driver ICs and memory. Display driver packaging uses distinct processes &mdash; COF and gold bumping &mdash; that most general OSATs do not prioritise, giving ChipMOS a defensible niche.",
+ cats:["Display driver IC packaging: COF, COG, gold bumping","Display driver test","Memory packaging and test","Mixed-signal and logic assembly and test"],
+ note:"A direct read on panel-driver and consumer-display demand, and on Novatek-type customers.",
+ web:"https://www.chipmos.com/",ir:"https://www.chipmos.com/en/investors",q:"ChipMOS 南茂科技 investor conference presentation quarterly results"},
+tfme:{n:"Tongfu Microelectronics",short:"TFME",tk:"SZSE: 002156",hq:"China",role:"OSAT",
+ d:"A Chinese packaging and test company with a close relationship to AMD, which sold it a controlling stake in its Suzhou and Penang assembly plants. It provides mainstream and increasingly advanced packaging for both domestic and international customers.",
+ cats:["Flip-chip and wire-bond packaging","CPU/GPU module assembly for AMD","Wafer-level and fan-out packaging","Test services"],
+ note:"An example of an international chip designer anchoring capacity inside China's back-end supply base.",
+ web:"https://www.tfme.com/en/",ir:"https://www.tfme.com/en/investor",q:"Tongfu Microelectronics 通富微电 investor relations results presentation"},
+
+/* ---- IP cores ---- */
+arm:{n:"Arm Holdings",short:"Arm",tk:"NASDAQ: ARM",hq:"UK",role:"IP licensing",
+ d:"Licenses processor architectures and cores rather than selling chips. Its instruction set underpins essentially all smartphones and a growing share of servers, PCs and automotive compute. Revenue comes from upfront licences plus a royalty on every chip shipped.",
+ cats:["CPU cores: Cortex-A, Cortex-R, Cortex-M, Neoverse for servers","GPU (Mali) and NPU (Ethos) cores","Compute Subsystems &mdash; larger pre-integrated blocks","Architecture licences allowing custom cores (Apple, Qualcomm)","Physical IP and system IP"],
+ note:"Royalty revenue lags shipments by a quarter or more, so Arm's results read as a delayed, broad index of the whole device market.",
+ web:"https://www.arm.com/",ir:"https://investors.arm.com/",q:"Arm Holdings investor relations quarterly results presentation"},
+sifive:{n:"SiFive",short:"SiFive",tk:"Private",hq:"US",role:"IP licensing &mdash; RISC-V",
+ d:"The leading commercial vendor of RISC-V processor IP. RISC-V is an open instruction set, so licensees avoid architecture royalties to a single owner &mdash; a commercial and, increasingly, a geopolitical argument for adoption.",
+ cats:["RISC-V CPU cores for embedded, automotive and AI","Vector and AI-oriented cores for accelerators","Custom core design services"],
+ note:"Private. Its traction is the main indicator of whether RISC-V can displace Arm outside of hobbyist and deeply embedded use.",
+ web:"https://www.sifive.com/",ir:"https://www.sifive.com/about",q:"SiFive RISC-V company overview funding news"},
+andes:{n:"Andes Technology",short:"Andes",tk:"TWSE: 6533",hq:"Taiwan",role:"IP licensing &mdash; RISC-V",
+ d:"Taiwan's processor IP company and one of the founding members of RISC-V International. It licenses configurable 32- and 64-bit RISC-V cores used widely in storage controllers, wireless, touch and AI edge devices.",
+ cats:["RISC-V CPU cores (AndesCore) 32-bit and 64-bit","Vector processing cores for AI and DSP workloads","Custom instruction extension tooling","Development tools and software stack"],
+ note:"A rare listed pure-play on RISC-V adoption, though revenue scale remains small relative to Arm.",
+ web:"https://www.andestech.com/en/",ir:"https://www.andestech.com/en/investors/",q:"Andes Technology 晶心科技 法人說明會 investor conference presentation"},
+ememory:{n:"eMemory Technology",short:"eMemory",tk:"TWSE: 3529",hq:"Taiwan",role:"IP licensing &mdash; NVM",
+ d:"Licenses embedded non-volatile memory IP &mdash; the logic-compatible one-time and multi-time programmable memory used to store trim values, keys and firmware on a chip without adding process steps. It also sells hardware security IP built on the same technology.",
+ cats:["NeoFuse OTP and NeoEE multi-time programmable memory IP","Embedded flash alternatives for advanced nodes","PUF-based hardware root-of-trust security IP (NeoPUF)","Foundry-qualified IP across TSMC, UMC, Samsung and others"],
+ note:"A royalty model with very high gross margin; its royalty stream tracks foundry wafer volumes across many nodes.",
+ web:"https://www.ememory.com.tw/",ir:"https://www.ememory.com.tw/en-us/Investors",q:"eMemory 力旺電子 法人說明會 investor conference presentation"},
+
+/* ---- EDA ---- */
+synopsys:{n:"Synopsys",short:"Synopsys",tk:"NASDAQ: SNPS",hq:"US",role:"EDA + IP",
+ d:"The largest EDA vendor and also the largest supplier of semiconductor design IP after Arm. Its tools cover the full flow from RTL synthesis through place-and-route to verification, and it has expanded into silicon lifecycle management and, via Ansys, multiphysics simulation.",
+ cats:["Digital and custom design implementation tools","Verification: simulation, emulation, prototyping","Design IP: interface (PCIe, USB, DDR), foundation, security","Silicon lifecycle management and test","Multiphysics simulation (Ansys)"],
+ note:"Subscription-heavy revenue makes it far less cyclical than the chipmakers it serves, while still capturing R&D spending growth.",
+ web:"https://www.synopsys.com/",ir:"https://investor.synopsys.com/",q:"Synopsys investor relations quarterly earnings presentation"},
+cadence:{n:"Cadence Design Systems",short:"Cadence",tk:"NASDAQ: CDNS",hq:"US",role:"EDA + IP",
+ d:"The second major EDA vendor, historically strongest in custom and analog design and in verification hardware. It has extended its 'computational software' positioning into system analysis, thermal and electromagnetic simulation, and molecular design.",
+ cats:["Digital implementation and signoff tools","Custom, analog and RF design (Virtuoso)","Verification and emulation hardware (Palladium, Protium)","Design IP: interfaces, memory, processors (Tensilica)","System analysis: PCB, thermal, electromagnetic"],
+ note:"Emulation hardware sales add a modest hardware cycle to an otherwise recurring software model.",
+ web:"https://www.cadence.com/",ir:"https://www.cadence.com/en_US/home/company/investor-relations.html",q:"Cadence Design Systems investor relations quarterly earnings presentation"},
+siemens:{n:"Siemens EDA (Mentor Graphics)",short:"Siemens EDA",tk:"FWB: SIE (parent)",hq:"Germany / US",role:"EDA",
+ d:"The third of the big three EDA vendors, acquired by Siemens in 2017 and folded into its Digital Industries Software unit. Particularly strong in verification, physical verification (Calibre) and PCB and system design.",
+ cats:["Calibre physical verification and DFM &mdash; an industry standard","IC design, verification and test (Tessent)","PCB and system design (Xpedition)","Embedded software and system simulation"],
+ note:"Not separately listed &mdash; results appear inside Siemens Digital Industries Software, which limits visibility into EDA specifically.",
+ web:"https://eda.sw.siemens.com/",ir:"https://www.siemens.com/global/en/company/investor-relations.html",q:"Siemens Digital Industries Software EDA investor relations results"},
+
+/* ---- Materials ---- */
+shinetsu:{n:"Shin-Etsu Chemical",short:"Shin-Etsu",tk:"TSE: 4063",hq:"Japan",role:"Materials",
+ d:"The world's largest supplier of silicon wafers and one of the leading photoresist makers. Its semiconductor materials business sits inside a much larger chemicals group that also makes PVC and silicones, which smooths its earnings profile.",
+ cats:["300mm and 200mm polished and epitaxial silicon wafers","Photoresists including EUV resist","Photomask blanks and rare-earth materials","Silicones and specialty chemicals"],
+ note:"Wafer supply contracts run multi-year, so wafer volume trends are a slow but reliable indicator of fab loading.",
+ web:"https://www.shinetsu.co.jp/en/",ir:"https://www.shinetsu.co.jp/en/ir/",q:"Shin-Etsu Chemical investor relations financial results presentation"},
+sumco:{n:"SUMCO Corporation",short:"SUMCO",tk:"TSE: 3436",hq:"Japan",role:"Materials",
+ d:"A silicon wafer pure-play and the number two supplier globally. Because it makes only wafers, its results are a clean read on wafer demand, inventory and pricing &mdash; there is no other business to mask the cycle.",
+ cats:["300mm polished and epitaxial wafers","200mm and small-diameter wafers","SOI and specialty substrates"],
+ note:"The cleanest listed proxy for total industry wafer starts; wafer inventory commentary often leads foundry utilisation.",
+ web:"https://www.sumcosi.com/english/",ir:"https://www.sumcosi.com/english/ir/",q:"SUMCO investor relations financial results presentation silicon wafer"},
+siltronic:{n:"Siltronic AG",short:"Siltronic",tk:"FWB: WAF",hq:"Germany",role:"Materials",
+ d:"Europe's silicon wafer supplier and one of the handful of firms able to make 300mm wafers to leading-edge specification. It has added capacity in Singapore to serve Asian fabs.",
+ cats:["300mm polished and epitaxial silicon wafers","200mm and smaller-diameter wafers","Specialty and float-zone wafers for power devices"],
+ note:"Smaller and more cyclical than the Japanese leaders; the European alternative in wafer supply-security discussions.",
+ web:"https://www.siltronic.com/",ir:"https://www.siltronic.com/en/investors.html",q:"Siltronic investor relations quarterly results presentation"},
+soitec:{n:"Soitec",short:"Soitec",tk:"EPA: SOI",hq:"France",role:"Materials",
+ d:"Makes engineered substrates rather than plain silicon. Its Smart Cut process bonds a thin layer of one material onto another, producing SOI, RF-SOI, POI and other substrates that give device makers performance that bulk silicon cannot.",
+ cats:["RF-SOI substrates for smartphone front-end modules","FD-SOI substrates for low-power logic","POI (piezoelectric-on-insulator) for RF filters","Power SOI, photonics and imaging substrates"],
+ note:"Revenue is concentrated in RF-SOI for handsets, which ties it closely to the smartphone cycle.",
+ web:"https://www.soitec.com/en",ir:"https://www.soitec.com/en/investors",q:"Soitec investor relations results presentation engineered substrates"},
+entegris:{n:"Entegris",short:"Entegris",tk:"NASDAQ: ENTG",hq:"US",role:"Materials &amp; contamination control",
+ d:"Supplies the materials-handling and purity infrastructure of a fab: filters, purifiers, wafer carriers, specialty gases and chemicals, and CMP consumables. Its content per wafer rises as nodes shrink because contamination tolerances tighten.",
+ cats:["Filtration and purification for process chemicals and gases","Advanced deposition and CMP materials","Wafer handling, shipping and storage (FOUPs)","Specialty gases and precursors"],
+ note:"Consumables-driven, so revenue tracks wafer starts rather than equipment capex &mdash; a more stable pattern than tool vendors.",
+ web:"https://www.entegris.com/",ir:"https://investor.entegris.com/",q:"Entegris investor relations quarterly earnings presentation"},
+jsr:{n:"JSR Corporation",short:"JSR",tk:"Private (JIC)",hq:"Japan",role:"Materials &mdash; photoresist",
+ d:"A leading photoresist supplier, including EUV resists, taken private by the Japan Investment Corporation in a deal explicitly framed around consolidating Japan's semiconductor materials strength. Resist chemistry is one of the most concentrated and least substitutable inputs in the fab.",
+ cats:["EUV, ArF immersion and KrF photoresists","Multilayer materials, developers and ancillaries","CMP slurries and cleaning chemicals","Life-science materials (separate segment)"],
+ note:"No longer listed, but its EUV resist position makes it strategically comparable in importance to a tool vendor.",
+ web:"https://www.jsr.co.jp/jsr_e/",ir:"https://www.jsr.co.jp/jsr_e/ir/",q:"JSR Corporation semiconductor materials photoresist EUV company overview"},
+tok:{n:"Tokyo Ohka Kogyo",short:"Tokyo Ohka",tk:"TSE: 4186",hq:"Japan",role:"Materials &mdash; photoresist",
+ d:"One of the small group of photoresist makers qualified at the leading edge, alongside JSR, Shin-Etsu, Fujifilm and Sumitomo. It also supplies high-purity chemicals and materials used in advanced packaging.",
+ cats:["EUV, ArF and KrF photoresists","High-purity process chemicals and developers","Advanced packaging materials (thick-film resists)","Cleaning and stripping chemistries"],
+ note:"Japan's dominance in resist chemistry is one reason export-control debates extend beyond equipment into materials.",
+ web:"https://www.tok.co.jp/eng",ir:"https://www.tok.co.jp/eng/ir",q:"Tokyo Ohka Kogyo investor relations financial results presentation"},
+iqe:{n:"IQE plc",short:"IQE",tk:"LON: IQE",hq:"UK",role:"Materials &mdash; compound epitaxy",
+ d:"Supplies epitaxial wafers for compound semiconductors &mdash; GaAs, InP, GaN and related materials grown as precise crystal layers on a substrate. These are the starting material for RF front ends, VCSELs, photonics and power devices.",
+ cats:["GaAs epiwafers for RF power amplifiers","VCSEL epitaxy for 3D sensing and optical datacom","InP for photonics and high-speed optical","GaN epitaxy for power and RF"],
+ note:"Small and volatile, closely tied to handset RF content and to optical datacom cycles.",
+ web:"https://www.iqep.com/",ir:"https://www.iqep.com/investors/",q:"IQE plc investor relations results presentation compound semiconductor"},
+
+/* ---- Equipment ---- */
+asml:{n:"ASML Holding",short:"ASML",tk:"AMS: ASML / NASDAQ: ASML",hq:"Netherlands",role:"Equipment &mdash; lithography",
+ d:"The sole supplier of extreme-ultraviolet lithography systems, the machines required to pattern leading-edge logic and advanced DRAM. No competitor exists, and building one would take a decade or more &mdash; which makes ASML both the industry's single greatest dependency and the most effective instrument of export control.",
+ cats:["EUV lithography systems (NXE) and High-NA EUV (EXE)","DUV immersion and dry lithography (NXT, XT)","Metrology and inspection (YieldStar, HMI e-beam)","Installed base management: service, upgrades, spares"],
+ note:"Bookings are the industry's most-watched forward indicator. Installed-base service revenue provides a large recurring cushion between capex cycles.",
+ web:"https://www.asml.com/",ir:"https://www.asml.com/en/investors",q:"ASML investor relations quarterly results presentation bookings"},
+amat:{n:"Applied Materials",short:"Applied Materials",tk:"NASDAQ: AMAT",hq:"US",role:"Equipment &mdash; broad",
+ d:"The largest and broadest semiconductor equipment company, supplying deposition, etch, ion implantation, CMP, metrology and inspection. Its breadth means it participates in almost every process step except lithography.",
+ cats:["Deposition: CVD, PVD, epitaxy, ALD","Etch, ion implantation and CMP","Process control, metrology and e-beam inspection","Display and advanced packaging equipment","Applied Global Services &mdash; parts, service, refurbished tools"],
+ note:"Broad exposure means its guidance reads as a general index of fab capex across logic, memory and mature nodes.",
+ web:"https://www.appliedmaterials.com/",ir:"https://ir.appliedmaterials.com/",q:"Applied Materials investor relations quarterly earnings presentation"},
+lam:{n:"Lam Research",short:"Lam Research",tk:"NASDAQ: LRCX",hq:"US",role:"Equipment &mdash; etch &amp; deposition",
+ d:"Specialises in the two steps that dominate 3D structures: plasma etch and thin-film deposition. Because 3D NAND scaling is achieved by stacking and then etching very high aspect-ratio holes, Lam's revenue is unusually levered to NAND capex.",
+ cats:["Plasma etch systems (Kiyo, Flex, Syndion)","Thin-film deposition: ALD, CVD, electroplating","Photoresist strip and wafer cleaning","Advanced packaging plating and dry resist","Customer support and spares"],
+ note:"The clearest equipment proxy for the NAND cycle; also gaining content in advanced packaging and gate-all-around logic.",
+ web:"https://www.lamresearch.com/",ir:"https://investor.lamresearch.com/",q:"Lam Research investor relations quarterly earnings presentation"},
+tel:{n:"Tokyo Electron",short:"Tokyo Electron",tk:"TSE: 8035",hq:"Japan",role:"Equipment &mdash; broad",
+ d:"Japan's largest semiconductor equipment maker and the global leader in coater/developer track systems, which pair with every lithography scanner. It also supplies etch, deposition, cleaning and wafer probers.",
+ cats:["Coater/developer track systems (near-monopoly position)","Plasma etch and deposition systems","Surface preparation and cleaning","Wafer probers and test handling","Flat panel display production equipment"],
+ note:"Its track systems ship alongside ASML scanners, so TEL orders and ASML orders tend to move together.",
+ web:"https://www.tel.com/",ir:"https://www.tel.com/ir/",q:"Tokyo Electron investor relations financial results presentation"},
+kla:{n:"KLA Corporation",short:"KLA",tk:"NASDAQ: KLAC",hq:"US",role:"Equipment &mdash; process control",
+ d:"The dominant supplier of process control: inspection and metrology tools that find defects and measure dimensions between process steps. Since yield is the primary determinant of foundry profitability, process control intensity rises with node complexity.",
+ cats:["Wafer defect inspection (optical and e-beam)","Metrology: film thickness, overlay, critical dimension","Reticle and photomask inspection","Advanced packaging and PCB inspection","Yield management software and analytics"],
+ note:"Structurally higher margin than most tool vendors, and its intensity per fab rises as processes get harder &mdash; a secular content story on top of the capex cycle.",
+ web:"https://www.kla.com/",ir:"https://ir.kla.com/",q:"KLA Corporation investor relations quarterly earnings presentation"},
+asmi:{n:"ASM International",short:"ASM International",tk:"AMS: ASM",hq:"Netherlands",role:"Equipment &mdash; ALD",
+ d:"The leader in atomic layer deposition, the technique used to lay down films one atomic layer at a time. ALD is essential for gate-all-around transistors and high-aspect-ratio structures, so ASMI's content per wafer rises sharply at each new logic node.",
+ cats:["Atomic layer deposition (ALD) systems","Epitaxy and plasma-enhanced ALD","Vertical furnaces and PECVD","Spares and service"],
+ note:"One of the purest ways to express a view on gate-all-around logic adoption rather than on wafer volume generally.",
+ web:"https://www.asm.com/",ir:"https://www.asm.com/investor-relations",q:"ASM International investor relations quarterly results presentation"},
+advantest:{n:"Advantest Corporation",short:"Advantest",tk:"TSE: 6857",hq:"Japan",role:"Equipment &mdash; test",
+ d:"The leading maker of automated test equipment, especially for high-end SoCs and memory. AI accelerators and HBM stacks take far longer to test than conventional chips, which has turned test from a cost line into a capacity bottleneck.",
+ cats:["SoC testers (V93000) for logic and AI accelerators","Memory testers for DRAM, HBM and NAND","Test handlers and device interface hardware","System-level test solutions"],
+ note:"Test time per device scales with complexity, so Advantest's demand grows faster than unit volumes in an AI-led cycle.",
+ web:"https://www.advantest.com/",ir:"https://www.advantest.com/investors/",q:"Advantest investor relations financial results presentation"},
+teradyne:{n:"Teradyne",short:"Teradyne",tk:"NASDAQ: TER",hq:"US",role:"Equipment &mdash; test",
+ d:"The other major automated test equipment vendor, with a strong position in mobile and analog SoC test, plus a robotics division (Universal Robots, MiR) that gives it an industrial automation angle alongside semiconductors.",
+ cats:["Semiconductor test systems (UltraFLEX, Magnum, ETS)","System-level and wireless test","Robotics: collaborative robots and mobile robots","Storage and defence/aerospace test"],
+ note:"Read alongside Advantest to separate mobile/analog test demand from AI and memory test demand.",
+ web:"https://www.teradyne.com/",ir:"https://investors.teradyne.com/",q:"Teradyne investor relations quarterly earnings presentation"}
+};
+
+/* one-line summaries shown by default; long text sits behind "Full detail" */
+const S = {
+intel:"x86 CPUs, and the only Western company still chasing leading-edge logic manufacturing.",
+ti:"The largest analog company &mdash; 80,000 catalogue parts made in its own 300mm fabs.",
+adi:"High-precision analog and signal chain for industrial, auto, medical and defence.",
+infineon:"World leader in power semiconductors &mdash; the chips that convert and switch electricity.",
+st:"Broad European IDM: STM32 microcontrollers, power, SiC, MEMS sensors.",
+nxp:"The most automotive-weighted large IDM &mdash; car processors, radar, secure access.",
+renesas:"Top automotive microcontroller supplier, expanded into analog and connectivity.",
+microchip:"Long-tail embedded control: MCUs, analog and FPGAs for fragmented industrial customers.",
+onsemi:"Intelligent power and image sensing, vertically integrated in silicon carbide.",
+rohm:"Japanese power IDM and an early mover in silicon carbide devices.",
+wolfspeed:"Pure-play silicon carbide &mdash; substrates and power devices. The sector's stress case.",
+sony:"Dominant supplier of CMOS image sensors &mdash; roughly half the world market.",
+bosch:"The largest MEMS sensor maker; a Tier-1 auto supplier that runs its own fabs.",
+murata:"The MLCC leader &mdash; thousands of capacitors per phone, plus RF filters.",
+samsung:"The only firm simultaneously top-tier in memory, foundry and SoC design.",
+skhynix:"Number two in DRAM and the early leader in HBM for AI accelerators.",
+micron:"The only US maker of both DRAM and NAND at scale; reports ahead of peers each quarter.",
+kioxia:"The company that invented NAND flash, now a NAND pure-play with no DRAM cushion.",
+wdc:"NAND via SanDisk plus hard drives &mdash; both revived by AI data-centre storage.",
+nanya:"Taiwan's DRAM maker &mdash; commodity and specialty, without HBM insulation.",
+nvidia:"Sells AI systems, not just chips: GPU + HBM + NVLink + networking + CUDA software.",
+amd:"The x86 challenger and second source of merchant AI GPUs; pioneered chiplets.",
+qualcomm:"Snapdragon chipsets plus a licensing arm that earns royalties on every handset.",
+broadcom:"Data-centre networking silicon and the largest custom AI ASIC partner for hyperscalers.",
+marvell:"Data-centre interconnect &mdash; optical DSPs, SerDes &mdash; and custom AI silicon.",
+mediatek:"Taiwan's largest fabless firm; a top-two smartphone SoC vendor by unit volume.",
+realtek:"The audio codecs and Ethernet controllers inside a large share of the world's PCs.",
+novatek:"Display driver ICs &mdash; the chips that turn a video signal into pixel voltages.",
+apple:"Designs silicon only for itself, but is always the first customer on each new node.",
+lattice:"Small, low-power FPGAs for control, security and interface bridging.",
+qorvo:"RF front-end modules and filters for smartphones, plus defence GaN.",
+skyworks:"RF front ends for handsets, plus automotive and IoT connectivity.",
+mps:"Fabless power management; content grows with every watt in an AI rack.",
+navitas:"Pure-play wide-bandgap: GaN power ICs and SiC devices.",
+pi:"High-voltage AC-DC conversion ICs that shrink the parts count of a power supply.",
+epc:"Pioneer of enhancement-mode GaN transistors for LiDAR, robotics and space.",
+innoscience:"Vertically integrated 8-inch GaN-on-silicon &mdash; the cost-led Chinese challenger.",
+socionext:"Japanese custom SoC house, built from the Fujitsu and Panasonic LSI businesses.",
+tsmc:"Invented the pure-play foundry model and is now the structural centre of the industry.",
+gf:"Left the leading edge in 2018; competes on RF-SOI, FDX and trusted Western capacity.",
+umc:"Taiwan's second foundry, focused on mature and specialty nodes.",
+smic:"China's largest foundry; blocked from EUV, so advanced nodes rely on DUV multi-patterning.",
+vis:"8-inch specialty foundry for power management and display drivers; TSMC-affiliated.",
+psmc:"Taiwanese foundry with DRAM heritage &mdash; memory and specialty logic processes.",
+tower:"Specialty analog foundry: RF-SOI, silicon photonics, power BCD, sensors.",
+alchip:"Turns a customer's AI architecture into a manufacturable chip &mdash; turnkey ASIC delivery.",
+guc:"TSMC's de facto design-service arm; turnkey ASIC with early access to new nodes.",
+ase:"The world's largest packaging and test house, and the bellwether for advanced packaging.",
+spil:"Taiwan's former number-two packager, now inside ASE Technology Holding.",
+amkor:"The largest US-headquartered OSAT &mdash; the Western alternative in back-end capacity.",
+jcet:"China's largest OSAT and a global top three; central to domestic back-end self-sufficiency.",
+kyec:"The largest independent test house &mdash; wafer probe, final test and burn-in.",
+pti:"The most memory-levered Taiwanese OSAT: DRAM, NAND and SSD packaging and test.",
+chipmos:"Specialist in display driver packaging (COF, gold bumping) and memory test.",
+tfme:"Chinese OSAT anchored by AMD, which sold it its Suzhou and Penang assembly plants.",
+arm:"Licenses the instruction set behind nearly every smartphone; earns a royalty per chip.",
+sifive:"The leading commercial vendor of RISC-V processor IP &mdash; the open-standard challenger.",
+andes:"Taiwan's RISC-V processor IP company and a RISC-V International founding member.",
+ememory:"Licenses embedded non-volatile memory IP &mdash; a royalty on foundry wafer volume.",
+synopsys:"The largest EDA vendor and, after Arm, the largest supplier of design IP.",
+cadence:"The second EDA vendor; strongest in custom/analog design and verification hardware.",
+siemens:"The third EDA vendor. Calibre physical verification is an industry standard.",
+shinetsu:"The world's largest silicon wafer supplier and a leading photoresist maker.",
+sumco:"Silicon wafer pure-play &mdash; the cleanest listed read on total industry wafer starts.",
+siltronic:"Europe's silicon wafer supplier, one of few able to make leading-edge 300mm.",
+soitec:"Engineered substrates &mdash; bonds thin layers to give performance bulk silicon cannot.",
+entegris:"The purity infrastructure of a fab: filters, gases, wafer carriers, CMP consumables.",
+jsr:"A leading EUV photoresist maker, taken private by Japan's state investment fund.",
+tok:"One of the few photoresist makers qualified at the leading edge.",
+iqe:"Epitaxial wafers for compound semiconductors &mdash; GaAs, InP, GaN, VCSEL.",
+asml:"Sole supplier of EUV lithography. No competitor exists, and none is close.",
+amat:"The broadest equipment vendor &mdash; deposition, etch, implant, CMP, inspection.",
+lam:"Etch and deposition specialist; unusually levered to the 3D NAND cycle.",
+tel:"Japan's largest tool maker and the near-monopoly in coater/developer track systems.",
+kla:"Dominates process control &mdash; the inspection and metrology that determines yield.",
+asmi:"The leader in atomic layer deposition, essential for gate-all-around transistors.",
+advantest:"The leading test equipment maker; AI chips take far longer to test than ordinary chips.",
+teradyne:"The other major test equipment vendor, plus an industrial robotics business."
+};
+
+/* rack elevation, top (U48) to bottom (U1) */
+const RACK=[
+ {u:"48",h:1,c:"empty"},
+ {u:"47",h:1,c:"mgmt",t:"OOB 1GbE MGMT Switch 02",n:"mgmt"},
+ {u:"46",h:1,c:"mgmt",t:"OOB 1GbE MGMT Switch 01",n:"mgmt"},
+ {u:"45",h:1,c:"empty"},
+ {u:"44-42",h:3,c:"pwr",t:"3U Power Shelf 110 kW (6 &times; 18.3 kW)",n:"pwr"},
+ {u:"41-39",h:3,c:"pwr",t:"3U Power Shelf 110 kW (6 &times; 18.3 kW)",n:"pwr"},
+ {u:"38",h:1,c:"stiff",t:"Rack Stiffener",n:"stiff"},
+ {rep:[37,28],h:1,c:"comp",t:"1U Compute Tray (2 Vera CPU, 4 Rubin GPU)",go:1},
+ {rep:[27,19],h:1,c:"sw",t:"1U NVSwitch6 Tray (4 &times; NVSwitch6)",n:"nvswitch"},
+ {rep:[18,11],h:1,c:"comp",t:"1U Compute Tray (2 Vera CPU, 4 Rubin GPU)",go:1},
+ {u:"10",h:1,c:"stiff",t:"Rack Stiffener + Drip Tray",n:"cool"},
+ {u:"9-7",h:3,c:"pwr",t:"3U Power Shelf 110 kW (6 &times; 18.3 kW)",n:"pwr"},
+ {u:"6-4",h:3,c:"pwr",t:"3U Power Shelf 110 kW (6 &times; 18.3 kW)",n:"pwr"},
+ {u:"3-1",h:3,c:"empty"}
+];
+
+/* NVL72 teardown */
+const NVL = {
+mgmt:{t:"Out-of-band management switches",s:"Two 1GbE switches that let operators reach every tray even when the main network is down.",
+ f:["Separate from the data network by design","Handles firmware updates, power cycling, telemetry","Small silicon, but the rack is unmanageable without it"],p:["nvidia","broadcom","marvell"]},
+pwr:{t:"3U power shelf &mdash; 110 kW",s:"Six 18.3 kW rectifiers per shelf, feeding a DC busbar that runs the height of the rack.",
+ f:["Four shelves installed &mdash; 440 kW of capacity for a rack in the 200 kW+ class","Power is converted in stages: grid &rarr; busbar &rarr; board VRM &rarr; sub-1 V at the die","Each conversion loses energy as heat the cooling system must remove","Rack power density is now a primary limit on data-centre design"],p:["mps","infineon","onsemi","ti"]},
+stiff:{t:"Rack stiffener",s:"Structural bracing. A fully populated rack weighs well over a tonne and cannot flex.",
+ f:["Blind-mate NVLink and coolant connectors need tight mechanical tolerance","Stiffener plus drip tray also contain coolant leaks"],p:[]},
+cool:{t:"Liquid cooling &mdash; stiffener and drip tray",s:"Coolant is piped to cold plates sitting directly on each package; air cooling cannot cope.",
+ f:["A CDU (in-rack or in-row) circulates and cools the loop","Drip tray catches leaks at the connector plane","Cooling capacity, not chip supply, often gates deployment"],p:[]},
+nvswitch:{t:"NVSwitch6 tray &times; 9",s:"36 NVSwitch6 chips form the scale-up fabric that makes 72 GPU packages behave as one accelerator.",
+ f:["4 NVSwitch6 chips per 1U tray, 9 trays in the rack","Roughly 260 TB/s of aggregate NVLink 6 bandwidth","Copper cable cartridge inside the rack; optics only between racks","Switch silicon is fabbed and packaged in the same advanced flow as the GPUs"],p:["nvidia","tsmc","broadcom","marvell"]},
+trayfront:{t:"Tray front I/O",s:"Scale-out networking and local NVMe storage face the cold aisle for service access.",
+ f:["CX9 NICs carry traffic between racks, ~28.8 TB/s per rack","Local NVMe stages data close to the GPUs","Front-serviceable so a tray can be swapped without draining the loop"],p:["nvidia","broadcom","marvell","micron","wdc"]},
+trayrear:{t:"Tray rear &mdash; blind-mate",s:"NVLink and coolant connect automatically when the tray slides in. No cables to plug.",
+ f:["Blind-mate is what makes a 1U tray field-serviceable at this power density","NVLink 6 backplane connects the tray to the switch trays"],p:["nvidia"]},
+vrm:{t:"Power stages / VRM",s:"Converts 48 V down to under 1 V, delivering on the order of a thousand amps into each GPU package.",
+ f:["Power is delivered up through the substrate, constraining package design","Conversion losses become heat the cold plate must remove","Content per rack rises every generation &mdash; a quiet growth market"],p:["mps","infineon","onsemi","ti"]},
+cold:{t:"Cold plates",s:"Metal plates with internal coolant channels, clamped straight onto the package lids.",
+ f:["Removes well over a kilowatt per GPU package","Contact pressure and thermal interface material are engineering problems in themselves"],p:[]},
+nic:{t:"CX9 NIC",s:"The scale-out network card &mdash; how one rack talks to the thousands of others in the cluster.",
+ f:["Scale-up (NVLink, in-rack) and scale-out (Ethernet/IB, between racks) are different networks","~28.8 TB/s of scale-out bandwidth per rack","Optical modules and DSPs sit on this path"],p:["nvidia","broadcom","marvell","tower"]},
+bmc:{t:"BMC and local NVMe",s:"Baseboard management controller for telemetry and firmware, plus SSDs for staging data.",
+ f:["The BMC is a small MCU-class device &mdash; mature node, but mandatory","NVMe SSDs use NAND from the memory makers"],p:["micron","wdc","kioxia","samsung"]},
+vera:{t:"Vera CPU",s:"An 88-core custom Arm processor, 176 threads. Its job is to feed the GPUs, not to compute itself.",
+ f:["Arm architecture licence; the cores are Nvidia's own design","Coherent with GPU memory over NVLink-C2C","Chosen for memory bandwidth per watt, not peak single-thread speed","36 Vera CPUs per rack, one per two Rubin packages"],p:["nvidia","arm","tsmc"]},
+nvlinkc2c:{t:"NVLink-C2C",s:"A coherent link between the Vera CPU and each Rubin package, replacing PCIe.",
+ f:["Coherence lets the GPU read CPU memory without an explicit copy","PCIe would be a bottleneck at this bandwidth"],p:["nvidia"]},
+socamm2:{t:"SOCAMM2 &mdash; LPDDR5X module",s:"A compact, socketed LPDDR5X module. 192 GB each, eight per CPU, ~1.5 TB per Vera.",
+ f:["1c-nm LPDDR5X running at 9.6 Gbps, up from 8.5 Gbps in SOCAMM1","Over twice the bandwidth and far better power efficiency than a DDR5 RDIMM","54 TB across the rack, versus 20.7 TB of HBM4 &mdash; more capacity, less speed","Modular, so memory can be serviced or upgraded separately from the CPU","This is the lesson: memory is a hierarchy, chosen per role, not one product"],p:["skhynix","samsung","micron"]},
+hbm:{t:"HBM4 stack",s:"12 DRAM dies bonded vertically with through-silicon vias, sitting millimetres from the GPU die.",
+ f:["36 GB per 12-Hi stack; 8 stacks = 288 GB per Rubin package","HBM4 widens the interface to 2,048 I/O per stack","Short distance is the point: both bandwidth and energy per bit improve","Stack yield limits supply, so HBM is contracted far in advance","It burns several times the wafer area of standard DRAM per bit"],p:["skhynix","micron","samsung"]},
+hbi:{t:"NV-HBI die-to-die link",s:"The interconnect that makes two physical dies behave as one coherent GPU.",
+ f:["Runs across the silicon interposer, not the organic substrate","Bandwidth this high is only possible over very short, dense wiring","The enabling idea behind chiplets generally"],p:["nvidia","tsmc"]},
+interposer:{t:"CoWoS-L interposer and substrate",s:"A silicon interposer carries fine wiring between dies; an ABF organic substrate carries power and I/O down to the board.",
+ f:["CoWoS capacity, not wafer capacity, has been the binding constraint on AI accelerator supply","Interposer area grows each generation, cutting units per wafer","ABF substrate supply is a separate and also-tight bottleneck","Every stack must be known-good before assembly &mdash; one bad die scraps the package"],p:["tsmc","ase","amkor"]},
+hbmphy:{t:"HBM4 PHY",s:"The die edge that drives thousands of parallel wires into the memory stacks.",
+ f:["HBM4 moves to 2,048 I/O per stack, so PHY area grows","PHY is licensed or custom IP &mdash; a real business for the IP vendors","Its width is why HBM must sit inside the package, not on the board"],p:["synopsys","cadence","nvidia"]},
+nvlphy:{t:"NVLink 6 PHY",s:"High-speed serial I/O that connects this GPU to every other GPU in the rack.",
+ f:["SerDes design is one of the hardest analog problems on a digital die","Scale-up bandwidth per package is in the terabytes per second"],p:["nvidia","synopsys","cadence"]},
+l2:{t:"L2 cache and on-die fabric",s:"Shared cache and the network that moves data between compute blocks and memory.",
+ f:["SRAM scales poorly on new nodes, so cache eats a growing share of die area","Fabric bandwidth, not core count, often limits real throughput"],p:["nvidia","tsmc"]},
+sm:{t:"SM / Tensor cores",s:"The compute array itself &mdash; the part that actually multiplies matrices.",
+ f:["Low-precision formats (FP8, FP4) trade accuracy for throughput and memory","Most of a training run is matrix multiply; the rest is data movement","Ironically the smallest share of the engineering problem at rack scale"],p:["nvidia"]},
+node:{t:"Process node &mdash; reticle limit",s:"Each die is drawn to the largest area a lithography scanner can print in one exposure.",
+ f:["Hitting the reticle limit is why the package uses two dies instead of one","Advanced nodes are available from a single supplier at volume","Node choice sets performance per watt and cost per transistor"],p:["tsmc","asml","amat","lam","tel"]},
+mask:{t:"Photomask set",s:"Dozens of EUV and DUV mask layers, costing tens of millions of dollars for a leading-edge design.",
+ f:["Mask cost is why a design must ship in volume to be viable","EUV masks need pellicles and defect inspection of their own","Mask writing and inspection is a specialist supply chain"],p:["asml","kla","shinetsu","tok"]},
+yield:{t:"Yield, probe and binning",s:"Every die is electrically tested on the wafer before anyone spends money packaging it.",
+ f:["Known-good-die is mandatory before 2.5D assembly","Large dies mean fewer per wafer and lower yield &mdash; cost compounds","Test time per device rises sharply with complexity"],p:["kyec","advantest","teradyne","kla"]},
+rack:{t:"Vera Rubin NVL72 rack",s:"72 Rubin GPU packages, 36 Vera CPUs, 36 NVSwitch6 chips and 75 TB of memory in one 48U frame.",
+ f:["18 compute trays &times; 4 Rubin packages = 72 packages, 144 dies","9 NVSwitch6 trays sit in the middle to keep cable runs short","4 power shelves and full liquid cooling take up the rest of the rack","NVIDIA markets this configuration as Vera Rubin NVL144, counting dies rather than packages"],p:["nvidia","tsmc","skhynix","ase"]}
+};
+
+/* ============ RENDER CHIPS ============ */
+const GROUPS = {
+  "c-idm-logic":["nxp","infineon","st","intel","ti","adi","renesas","microchip","onsemi","sony","bosch","murata","rohm","wolfspeed"],
+  "c-idm-mem":["samsung","skhynix","micron","kioxia","nanya","wdc"],
+  "c-fabless":["nvidia","qualcomm","broadcom","amd","marvell","mediatek","realtek","novatek","apple","lattice","qorvo","skyworks","mps","navitas","pi","epc","innoscience"],
+  "c-foundry":["tsmc","samsung","gf","umc","smic","vis","psmc","tower","intel"],
+  "c-osat":["ase","amkor","jcet","spil","kyec","chipmos","tfme","pti"],
+  "c-service":["alchip","guc","socionext"],
+  "c-ip":["arm","sifive","andes","ememory"],
+  "c-eda":["synopsys","cadence","siemens"],
+  "c-mat":["shinetsu","sumco","siltronic","soitec","entegris","jsr","tok","iqe"],
+  "c-equip":["asml","amat","lam","tel","kla","asmi","advantest","teradyne"]
+};
+/* logo: real favicon from the company's own domain, with a coloured initial as fallback */
+function domainOf(k){ try{ return new URL(CO[k].web).hostname.replace(/^www\./,'') }catch(e){ return '' } }
+function hue(str){ let h=0; for(const ch of str) h=(h*31+ch.charCodeAt(0))%360; return h }
+function logo(k,big){
+  const c=CO[k], d=domainOf(k);
+  const col='hsl('+hue(k)+' 42% 45%)';
+  const ini=(c.short||c.n).replace(/[^A-Za-z]/g,'').charAt(0).toUpperCase();
+  const img=d?'<img loading="lazy" src="https://www.google.com/s2/favicons?domain='+d+'&sz=64" alt="" onerror="this.remove()">':'';
+  return '<span class="lg'+(big?' big':'')+'" data-i="'+ini+'" style="--c:'+col+'">'+img+'</span>';
+}
+function chipHTML(k){
+  const c=CO[k]; if(!c) return '';
+  const search=(c.n+' '+(c.short||'')+' '+c.role+' '+c.hq+' '+c.cats.join(' ')+' '+(S[k]||'')).toLowerCase()
+    .replace(/&mdash;|&amp;/g,' ').replace(/"/g,'');
+  return '<span class="chip'+(c.hq==='Taiwan'?' tw':'')+'" data-c="'+k+'" data-search="'+search+'">'
+    +logo(k)+(c.short||c.n)+'</span>';
+}
+Object.entries(GROUPS).forEach(([id,keys])=>{
+  const host=document.getElementById(id); if(!host) return;
+  host.innerHTML=keys.map(chipHTML).join('');
+});
+document.querySelectorAll('.chips[data-co]').forEach(el=>{
+  el.innerHTML=el.dataset.co.split(',').map(chipHTML).join('');
+});
+
+/* ============ MODAL ============ */
+const scrim=document.getElementById('scrim'), modal=document.getElementById('modal');
+let stack=[];
+const g=s=>'https://www.google.com/search?q='+encodeURIComponent(s);
+
+const head=(kick,title,showBack)=>
+  '<div class="mtop">'+(showBack&&stack.length>1?'<button class="back" data-act="back">&larr; Back</button>':'')+
+  '<div class="sp"><div class="kicker">'+kick+'</div><h3>'+title+'</h3></div>'+
+  '<button class="close" data-act="close">&times;</button></div>';
+const players=list=>'<div class="plist">'+(list||[]).filter(x=>CO[x]).map(chipHTML).join('')+'</div>';
+const detail=(label,inner)=>'<details class="more"><summary>'+label+'</summary><div>'+inner+'</div></details>';
+
+function renderSeg(k){
+  const d=SEG[k]; if(!d) return;
+  modal.innerHTML=head(d.k,d.t,true)+
+    '<p class="one">'+d.d+'</p>'+
+    detail('Why it matters','<ul>'+d.f.map(x=>'<li>'+x+'</li>').join('')+'</ul>')+
+    '<h5>Who plays here</h5>'+players(d.p);
+}
+
+function renderNvl(k){
+  const d=NVL[k]; if(!d) return;
+  modal.innerHTML=head('NVL72 teardown',d.t,true)+
+    '<p class="one">'+d.s+'</p>'+
+    detail('Why it matters','<ul>'+d.f.map(x=>'<li>'+x+'</li>').join('')+'</ul>')+
+    '<h5>Supply chain</h5>'+players(d.p);
+}
+
+function renderCo(k){
+  const c=CO[k]; if(!c) return;
+  const tags=[c.role,c.hq,c.tk].filter(Boolean)
+    .map((t,i)=>'<span class="tag'+(i===0?' hl':'')+'">'+t+'</span>').join('');
+  const links=
+    '<a class="lnk primary" target="_blank" rel="noopener" href="'+g(c.q)+'">Latest investor deck &#8599;</a>'+
+    (c.ir?'<a class="lnk" target="_blank" rel="noopener" href="'+c.ir+'">IR page &#8599;</a>':'')+
+    (c.web?'<a class="lnk" target="_blank" rel="noopener" href="'+c.web+'">Products &#8599;</a>':'');
+  modal.innerHTML=
+    '<div class="mtop">'+(stack.length>1?'<button class="back" data-act="back">&larr; Back</button>':'')+
+    '<div class="sp hero">'+logo(k,true)+'<div><div class="kicker">'+c.role+'</div><h3>'+c.n+'</h3></div></div>'+
+    '<button class="close" data-act="close">&times;</button></div>'+
+    '<div class="meta">'+tags+'</div>'+
+    '<p class="one">'+(S[k]||c.d)+'</p>'+
+    '<div class="ptags">'+c.cats.map(x=>'<span class="ptag">'+x+'</span>').join('')+'</div>'+
+    detail('Full detail','<p>'+c.d+'</p>'+(c.note?'<p><b>Position in the chain.</b> '+c.note+'</p>':''))+
+    '<div class="links">'+links+'</div>'+
+    '<p class="foot">The first button runs a live search, so it finds the newest deck even if the IR site changes.</p>';
+}
+
+const R={seg:renderSeg,co:renderCo,nvl:renderNvl};
+function open(type,key){ stack.push({type,key}); R[type](key); scrim.classList.add('on'); modal.scrollTop=0 }
+function back(){
+  stack.pop(); const s=stack[stack.length-1];
+  if(!s){closeM();return}
+  R[s.type](s.key); modal.scrollTop=0;
+}
+function closeM(){scrim.classList.remove('on');stack=[]}
+
+document.addEventListener('click',e=>{
+  const act=e.target.closest('[data-act]');
+  if(act){act.dataset.act==='close'?closeM():back();return}
+  const chip=e.target.closest('[data-c]');
+  if(chip){open('co',chip.dataset.c);return}
+  const nv=e.target.closest('[data-n]');
+  if(nv){stack=[];open('nvl',nv.dataset.n);return}
+  const card=e.target.closest('.card[data-k]');
+  if(card){stack=[];open('seg',card.dataset.k)}
+});
+scrim.addEventListener('click',e=>{if(e.target===scrim)closeM()});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){scrim.classList.contains('on')?closeM():0}
+});
+
+/* ============ NVL72 DRILL-DOWN ============ */
+(function(){
+  const rackEl=document.getElementById('rack');
+  if(!rackEl) return;
+  let html='';
+  RACK.forEach(r=>{
+    if(r.rep){
+      for(let u=r.rep[0];u>=r.rep[1];u--)
+        html+='<div class="ru"'+(r.go?' data-go="'+r.go+'"':'')+(r.n?' data-n="'+r.n+'"':'')+
+              '><div class="un">'+u+'</div><div class="ub b-'+r.c+'" style="--h:1">'+(r.t||'')+'</div></div>';
+    }else{
+      html+='<div class="ru"'+(r.n?' data-n="'+r.n+'"':'')+
+            '><div class="un">'+r.u+'</div><div class="ub b-'+r.c+'" style="--h:'+r.h+'">'+(r.t||'')+'</div></div>';
+    }
+  });
+  rackEl.innerHTML=html;
+
+  const NAMES=["Rack &mdash; 48U","Compute tray","Vera Rubin Superchip","Rubin package","Rubin die"];
+  const HINTS=[
+    "Click any green compute tray to open it. Blue, orange and pink rows open an explanation instead.",
+    "Click either Superchip to open the board. The blocks below explain the rest of the tray.",
+    "Click a Rubin GPU package to look inside it. SOCAMM2 modules and the Vera CPU open explanations.",
+    "Click a Rubin die to see its floorplan. HBM4 stacks and the interposer open explanations.",
+    "Every block here opens an explanation &mdash; this is the end of the drill-down."
+  ];
+  const crumbs=document.getElementById('crumbs'), hintbar=document.getElementById('hintbar');
+  let lvl=0;
+  function setLvl(n){
+    lvl=n;
+    document.querySelectorAll('#v3 .lvl').forEach((el,i)=>el.classList.toggle('on',i===n));
+    crumbs.innerHTML=NAMES.map((t,i)=>
+      '<span class="crumb'+(i===n?' on':'')+(i>n?' off':'')+'" data-lvl="'+i+'">'+t+'</span>')
+      .join('<span class="csep">&rsaquo;</span>');
+    hintbar.innerHTML=HINTS[n];
+    document.getElementById('v3').scrollIntoView({block:'nearest'});
+  }
+  crumbs.addEventListener('click',e=>{
+    const c=e.target.closest('.crumb[data-lvl]');
+    if(c && !c.classList.contains('off')) setLvl(+c.dataset.lvl);
+  });
+  document.getElementById('v3').addEventListener('click',e=>{
+    if(e.target.closest('[data-n]')) return;      // explanation modal wins
+    const go=e.target.closest('[data-go]');
+    if(go) setLvl(+go.dataset.go);
+  },true);
+  setLvl(0);
+})();
+
+/* ============ TABS + FILTER ============ */
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+    document.querySelectorAll('.view').forEach(x=>x.classList.remove('on'));
+    t.classList.add('on');
+    document.getElementById(t.dataset.v).classList.add('on');
+  });
+});
+document.getElementById('q').addEventListener('input',e=>{
+  const v=e.target.value.trim().toLowerCase();
+  document.querySelectorAll('.chip[data-search]').forEach(c=>{
+    c.classList.toggle('dim', v.length>0 && !c.dataset.search.includes(v));
+  });
+  if(v.length>0 && document.getElementById('v1').classList.contains('on'))
+    document.querySelector('.tab[data-v="v2"]').click();
+});
+</script>
+</body>
+</html>

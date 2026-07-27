@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="互動式半導體先進製程與先進封裝產業鏈教學圖" />
+  <title>半導體製程與產業鏈互動教學圖</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --panel: #ffffff;
+      --panel-soft: #f8fafc;
+      --text: #162033;
+      --muted: #657086;
+      --border: #d9e0ea;
+      --accent: #335cff;
+      --accent-soft: #eef2ff;
+      --accent-text: #ffffff;
+      --shadow: 0 10px 28px rgba(27, 42, 72, 0.08);
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: Inter, "Noto Sans TC", "Microsoft JhengHei", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.6;
+    }
+
+    button, input { font: inherit; }
+
+    button {
+      cursor: pointer;
+    }
+
+    .page {
+      width: min(1500px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 56px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #18244a 0%, #213a82 55%, #335cff 100%);
+      color: white;
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(1.7rem, 3vw, 2.6rem);
+      line-height: 1.25;
+    }
+
+    .hero p {
+      max-width: 1050px;
+      margin: 12px 0 0;
+      color: rgba(255,255,255,.84);
+    }
+
+    .hero .note {
+      margin-top: 16px;
+      padding: 12px 14px;
+      border: 1px solid rgba(255,255,255,.28);
+      border-radius: 12px;
+      background: rgba(255,255,255,.08);
+      font-size: .92rem;
+    }
+
+    .section {
+      margin-top: 22px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .section-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    h2, h3, p {
+      margin-top: 0;
+    }
+
+    h2 {
+      margin-bottom: 4px;
+      font-size: 1.22rem;
+    }
+
+    h3 {
+      margin-bottom: 6px;
+      font-size: 1rem;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: .92rem;
+    }
+
+    .mode-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .mode-btn, .step-btn {
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      border-radius: 12px;
+      transition: .18s ease;
+    }
+
+    .mode-btn {
+      padding: 10px 14px;
+      font-weight: 700;
+    }
+
+    .mode-btn:hover, .step-btn:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .mode-btn.active {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .step-btn {
+      min-height: 82px;
+      padding: 12px;
+      text-align: left;
+    }
+
+    .step-btn strong {
+      display: block;
+      font-size: .94rem;
+    }
+
+    .step-btn span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: .79rem;
+    }
+
+    .step-btn.active {
+      color: var(--accent-text);
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .step-btn.active span {
+      color: rgba(255,255,255,.82);
+    }
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 700;
+      font-size: .8rem;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .info-card {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--panel-soft);
+      padding: 14px;
+    }
+
+    .info-label {
+      color: var(--muted);
+      font-size: .84rem;
+      font-weight: 700;
+    }
+
+    ul {
+      margin: 8px 0 0;
+      padding-left: 20px;
+    }
+
+    li + li {
+      margin-top: 4px;
+    }
+
+    .toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .9rem;
+    }
+
+    .chain-wrap {
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .chain-grid {
+      min-width: 1120px;
+      display: grid;
+      grid-template-columns: repeat(6, minmax(170px, 1fr));
+      gap: 10px;
+    }
+
+    .chain-card {
+      position: relative;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      background: var(--panel-soft);
+    }
+
+    .chain-card:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      top: 50%;
+      right: -10px;
+      transform: translate(50%, -50%);
+      z-index: 2;
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--accent);
+      color: white;
+      font-weight: 800;
+    }
+
+    .company-block {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border);
+      color: var(--muted);
+      font-size: .88rem;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .flow-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .flow-card {
+      position: relative;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--panel-soft);
+      padding: 16px;
+      min-height: 260px;
+    }
+
+    .flow-card:not(:nth-child(3n))::after {
+      content: "→";
+      position: absolute;
+      right: -13px;
+      top: 32px;
+      z-index: 2;
+      width: 26px;
+      height: 26px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--accent);
+      color: white;
+      font-weight: 800;
+    }
+
+    .flow-head {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .flow-number {
+      flex: 0 0 auto;
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      background: var(--accent);
+      color: white;
+      font-weight: 800;
+      font-size: .82rem;
+    }
+
+    .flow-block {
+      margin-top: 14px;
+    }
+
+    .flow-block strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: .88rem;
+    }
+
+    .flow-block p {
+      margin-bottom: 5px;
+      font-size: .91rem;
+    }
+
+    .flow-block .en {
+      color: var(--muted);
+      font-size: .84rem;
+    }
+
+    .footer-note {
+      margin-top: 22px;
+      border-left: 4px solid var(--accent);
+      background: var(--accent-soft);
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: .92rem;
+    }
+
+    @media (max-width: 1100px) {
+      .steps-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .flow-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .flow-card:not(:nth-child(3n))::after {
+        display: none;
+      }
+      .flow-card:nth-child(odd)::after {
+        content: "→";
+        display: grid;
+        position: absolute;
+        right: -13px;
+        top: 32px;
+        z-index: 2;
+        width: 26px;
+        height: 26px;
+        place-items: center;
+        border-radius: 50%;
+        background: var(--accent);
+        color: white;
+        font-weight: 800;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .page {
+        width: min(100% - 20px, 1500px);
+        padding-top: 12px;
+      }
+      .hero {
+        padding: 22px;
+        border-radius: 18px;
+      }
+      .section {
+        padding: 14px;
+      }
+      .steps-grid,
+      .summary-grid,
+      .flow-grid {
+        grid-template-columns: 1fr;
+      }
+      .flow-card::after {
+        display: none !important;
+      }
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+      .page {
+        width: 100%;
+        padding: 0;
+      }
+      .hero, .section {
+        box-shadow: none;
+      }
+      .mode-row, .toggle {
+        display: none;
+      }
+      .steps-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <h1>半導體製程與產業鏈互動教學圖</h1>
+      <p>Semiconductor Process & Supply Chain Interactive Learning Explorer</p>
+      <p>選擇先進製程 1–9 或先進封裝 1–7，再點選任一站點；頁面將展開製程目的、核心技術、關鍵指標、上游材料與設備、代表性供應商，以及站點內部逐步流程。</p>
+      <div class="note">
+        本頁採教學式流程分類。實際步驟、重複次數與整合順序會因 GAA、DRAM、3D NAND、HBM、Chiplet 與各製造商流程而不同。
+      </div>
+    </header>
+
+    <section class="section">
+      <div class="mode-row">
+        <button id="apBtn" class="mode-btn active" type="button">先進製程 Advanced Process · 1–9</button>
+        <button id="pkBtn" class="mode-btn" type="button">先進封裝 Advanced Packaging · 1–7</button>
+      </div>
+      <div id="steps" class="steps-grid"></div>
+    </section>
+
+    <section class="section">
+      <div class="title-row">
+        <div>
+          <h2 id="title"></h2>
+          <div id="subtitle" class="muted"></div>
+        </div>
+        <span id="badge" class="badge"></span>
+      </div>
+
+      <div class="summary-grid">
+        <article class="info-card">
+          <div class="info-label">製程目的｜Purpose</div>
+          <div id="purpose"></div>
+        </article>
+        <article class="info-card">
+          <div class="info-label">核心技術｜Core technology</div>
+          <div id="tech"></div>
+        </article>
+        <article class="info-card">
+          <div class="info-label">關鍵指標｜Critical metrics</div>
+          <div id="metrics"></div>
+        </article>
+        <article class="info-card">
+          <div class="info-label">主要材料｜Key materials</div>
+          <div id="materials"></div>
+        </article>
+        <article class="info-card">
+          <div class="info-label">主要設備｜Equipment</div>
+          <div id="equipment"></div>
+        </article>
+        <article class="info-card">
+          <div class="info-label">良率與可靠度風險｜Yield and reliability risks</div>
+          <div id="risks"></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>完整產業鏈再次展開｜Expanded industry chain</h2>
+          <div class="muted">由基礎原料一路延伸至終端產品；公司為代表性示例，非完整供應商名錄。</div>
+        </div>
+        <label class="toggle">
+          <input id="toggle" type="checkbox" checked />
+          顯示代表公司｜Show examples
+        </label>
+      </div>
+
+      <div class="chain-wrap">
+        <div id="chain" class="chain-grid"></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2>站點內部教學流程｜Step-by-step learning flow</h2>
+          <div class="muted">每張卡片說明「這一步做什麼」以及「為什麼重要」。</div>
+        </div>
+      </div>
+      <div id="flow" class="flow-grid"></div>
+    </section>
+
+    <div class="footer-note">
+      <strong>建議的資訊架構：</strong>
+      主管母圖維持「產品類別 × 產業鏈」的高階結構；原料商、零組件商與設備商以橫向支援軌道呈現。需要技術深度時，再由本 HTML 進入各製程站點。
+    </div>
+  </main>
+
+  <script>
+    const data = {"ap": [{"title": "1. 晶圓與磊晶", "en": "Wafer and epitaxy", "purpose": "建立低缺陷、高平坦度且具有指定晶向與電阻率的起始晶圓，必要時再成長特定成分的磊晶層。", "tech": "高純度矽精煉、單晶拉製、切片、研磨、化學機械拋光，以及 Si、SiGe 或其他材料的外延成長。", "metrics": ["缺陷密度（Defect density）", "總厚度變異（Total thickness variation, TTV）", "晶圓翹曲（Bow and warp）", "電阻率均勻度（Resistivity uniformity）", "磊晶厚度均勻度（Epitaxial thickness uniformity）"], "materials": ["電子級多晶矽", "石英坩堝", "摻雜材料", "磊晶前驅氣體", "研磨液與拋光墊"], "equipment": ["單晶成長爐", "線切割設備", "研磨與拋光機", "磊晶反應爐", "晶圓表面檢查設備"], "risks": ["晶格缺陷", "金屬污染", "表面顆粒", "晶圓翹曲", "磊晶層厚度不均"], "chain": [["石英", "冶金級矽", "石墨", "工業氣體"], ["Prime wafer", "SOI wafer", "電子級多晶矽", "磊晶氣體", "拋光耗材"], ["石英件", "加熱器", "流量控制器", "真空零件", "過濾器"], ["拉晶爐", "切片設備", "拋光設備", "磊晶設備", "檢查設備"], ["晶圓製造", "磊晶服務", "晶圓進料檢查"], ["Logic", "Memory", "Power semiconductor", "CIS"]], "companies": [["高純度矽與石英供應商"], ["Shin-Etsu", "SUMCO", "GlobalWafers", "Siltronic", "Soitec"], ["真空、熱控、流量與石英零件供應商"], ["ASM", "Applied Materials", "Kokusai Electric"], ["Foundry", "IDM", "Specialty wafer manufacturers"], ["CPU/GPU", "DRAM/NAND", "Power devices", "Image sensors"]], "flow": [{"name": "原料純化（Raw-material purification）", "what_zh": "將冶金級矽轉換為電子級高純度多晶矽。", "why_zh": "降低金屬與雜質含量，避免污染直接影響元件漏電與可靠度。", "what_en": "Convert metallurgical-grade silicon into electronic-grade polysilicon.", "why_en": "Impurity control at this stage sets the contamination baseline for the entire wafer."}, {"name": "單晶成長（Single-crystal growth）", "what_zh": "利用拉晶法形成具有特定晶向與摻雜濃度的單晶矽棒。", "why_zh": "建立元件所需的晶體結構與基本電性條件。", "what_en": "Grow a single-crystal silicon ingot with controlled orientation and doping.", "why_en": "The crystal quality determines the electrical foundation of every device built later."}, {"name": "切片與邊緣加工（Slicing and edge shaping）", "what_zh": "把矽棒切成薄片，並進行倒角與厚度初步控制。", "why_zh": "將晶棒轉換成可進入晶圓製程的標準尺寸。", "what_en": "Slice the ingot into wafers and shape the edges.", "why_en": "This creates mechanically stable wafers suitable for downstream processing."}, {"name": "研磨與拋光（Grinding and polishing）", "what_zh": "移除切割損傷並形成高度平坦、低粗糙度的表面。", "why_zh": "曝光與薄膜製程需要極佳平坦度，否則會產生焦距與膜厚誤差。", "what_en": "Remove slicing damage and create an ultra-flat surface.", "why_en": "High flatness is essential for lithography focus and film uniformity."}, {"name": "磊晶成長（Epitaxial growth）", "what_zh": "在晶圓表面成長晶格排列一致的高純度薄層。", "why_zh": "可獨立控制通道、電阻率與缺陷分布，支援高效能元件。", "what_en": "Grow a high-quality crystalline layer on the wafer surface.", "why_en": "Epitaxy enables tighter control of channel properties and device performance."}, {"name": "品質檢查（Incoming quality inspection）", "what_zh": "量測顆粒、缺陷、厚度、翹曲與電阻率。", "why_zh": "確保只有符合規格的晶圓進入昂貴的晶圓製造流程。", "what_en": "Measure particles, defects, thickness, warp, and resistivity.", "why_en": "Early screening prevents defective wafers from consuming costly fab capacity."}]}, {"title": "2. 隔離與井區", "en": "Isolation and well formation", "purpose": "建立元件之間的電性隔離，並定義 P 型與 N 型井區，避免相鄰電晶體互相干擾。", "tech": "淺溝槽隔離、介電層填充、離子植入、退火與化學機械平坦化。", "metrics": ["淺溝槽深度（STI depth）", "井區植入劑量（Well implantation dose）", "接面深度（Junction depth）", "隔離漏電（Isolation leakage）", "崩潰電壓（Breakdown voltage）"], "materials": ["光阻", "硬遮罩材料", "氧化物與氮化物前驅物", "植入氣體", "CMP 研磨液"], "equipment": ["曝光機", "蝕刻機", "CVD 設備", "離子植入機", "退火設備", "CMP 設備"], "risks": ["STI 填充空洞", "邊角漏電", "植入劑量偏差", "接面擴散", "CMP 凹陷"], "chain": [["矽", "氟氯化學品", "硼磷原料", "工業氣體"], ["光阻", "TEOS", "氮化物前驅物", "植入氣體", "CMP 耗材"], ["RF 電源", "靜電吸盤", "氣體分配盤", "離子源", "終點偵測器"], ["曝光", "蝕刻", "沉積", "植入", "退火", "CMP"], ["FEOL 隔離模組", "井區形成模組"], ["FinFET", "GAA", "DRAM 周邊電路", "MCU"]], "companies": [["工業氣體與化學原料商"], ["JSR", "TOK", "Fujifilm", "Merck", "Entegris"], ["MKS Instruments", "Edwards", "VAT", "Advanced Energy"], ["ASML", "TEL", "Lam Research", "Applied Materials", "Axcelis"], ["Foundry", "Logic IDM", "Memory IDM"], ["Logic", "Memory", "Specialty IC"]], "flow": [{"name": "主動區定義（Active-area definition）", "what_zh": "利用微影定義哪些區域要形成電晶體、哪些區域要被隔離。", "why_zh": "建立元件版圖邊界，避免後續製程在錯誤區域加工。", "what_en": "Use lithography to define active and isolation regions.", "why_en": "This establishes where transistors may be formed."}, {"name": "溝槽蝕刻（Trench etching）", "what_zh": "在矽中蝕刻淺溝槽，形成元件之間的物理邊界。", "why_zh": "提供比傳統場氧化更小、更精準的隔離結構。", "what_en": "Etch shallow trenches into silicon.", "why_en": "The trenches create compact electrical separation between devices."}, {"name": "介電層填充（Dielectric fill）", "what_zh": "以氧化物填滿溝槽。", "why_zh": "絕緣材料阻止電流在相鄰電晶體間流動。", "what_en": "Fill the trenches with dielectric material.", "why_en": "The dielectric prevents unwanted current paths between adjacent devices."}, {"name": "平坦化（Planarization）", "what_zh": "使用 CMP 去除多餘介電層，使表面重新平坦。", "why_zh": "恢復後續曝光與閘極製程所需的平坦表面。", "what_en": "Remove excess dielectric by CMP.", "why_en": "A flat surface is required for accurate downstream patterning."}, {"name": "井區植入（Well implantation）", "what_zh": "植入硼、磷或砷，建立 P-well 與 N-well。", "why_zh": "控制不同電晶體的基板型態、臨界電壓與隔離能力。", "what_en": "Implant dopants to form P-wells and N-wells.", "why_en": "Well formation defines the electrical environment of NMOS and PMOS devices."}, {"name": "退火活化（Annealing and activation）", "what_zh": "以熱處理修復植入損傷並活化摻雜原子。", "why_zh": "讓摻雜原子真正產生所需的電性，同時降低晶格缺陷。", "what_en": "Anneal the wafer to activate dopants and repair lattice damage.", "why_en": "Activation converts implanted atoms into electrically useful dopants."}]}, {"title": "3. 閘極與通道", "en": "Gate stack and channel", "purpose": "形成控制電晶體開關的通道、閘極介電層與金屬閘極，是決定效能、功耗與漏電的核心模組。", "tech": "High-k/Metal Gate、FinFET、GAA nanosheet、原子層沉積、選擇性磊晶與選擇性蝕刻。", "metrics": ["等效氧化層厚度（Equivalent oxide thickness, EOT）", "臨界電壓（Threshold voltage, Vt）", "閘極漏電（Gate leakage）", "載子遷移率（Carrier mobility）", "奈米片厚度均勻度（Nanosheet thickness uniformity）"], "materials": ["High-k 前驅物", "TiN、W、Ru 等金屬材料", "SiGe 前驅物", "選擇性蝕刻化學品"], "equipment": ["ALD", "CVD", "選擇性磊晶設備", "原子層蝕刻設備", "快速退火設備", "CD 量測設備"], "risks": ["介面缺陷", "閘極空洞", "臨界電壓變異", "奈米片塌陷", "閘極漏電"], "chain": [["Hf、Zr、Ti、W、Ru 原料", "矽與鍺原料"], ["High-k 前驅物", "金屬前驅物", "SiGe 氣體", "選擇性蝕刻液"], ["ALD 閥件", "前驅物輸送系統", "加熱管線", "真空泵", "感測器"], ["ALD/CVD", "選擇性磊晶", "原子層蝕刻", "退火", "CD 量測"], ["Gate-stack integration", "Channel integration"], ["CPU", "GPU", "AI ASIC", "Mobile SoC"]], "companies": [["特殊金屬與高純度原料供應商"], ["Merck", "Air Liquide", "Entegris", "ADEKA"], ["真空、閥件、熱控與前驅物輸送商"], ["ASM", "Applied Materials", "Lam Research", "TEL", "KLA"], ["Leading-edge foundry", "Advanced logic IDM"], ["HPC", "AI accelerators", "Mobile processors"]], "flow": [{"name": "通道結構形成（Channel formation）", "what_zh": "形成 Fin 或奈米片等三維通道結構。", "why_zh": "通道幾何決定閘極對電流的控制能力。", "what_en": "Form fins or nanosheets as transistor channels.", "why_en": "The channel geometry determines electrostatic control and drive current."}, {"name": "高介電常數層沉積（High-k deposition）", "what_zh": "以 ALD 沉積極薄且均勻的 High-k 介電層。", "why_zh": "在保持低漏電的同時提高閘極電容。", "what_en": "Deposit an ultra-thin high-k dielectric by ALD.", "why_en": "High-k materials improve gate control without excessive leakage."}, {"name": "功函數金屬沉積（Work-function metal deposition）", "what_zh": "依 NMOS 或 PMOS 需求沉積不同金屬層。", "why_zh": "調整電晶體臨界電壓，使不同元件在正確電壓下切換。", "what_en": "Deposit work-function metals for NMOS and PMOS devices.", "why_en": "These metals tune the threshold voltage of each transistor type."}, {"name": "閘極填充（Gate fill）", "what_zh": "以金屬填滿閘極空間並形成低電阻導體。", "why_zh": "完成控制通道的電極，同時降低閘極電阻。", "what_en": "Fill the gate cavity with conductive metal.", "why_en": "The gate conductor controls the channel and must remain low resistance."}, {"name": "熱處理與介面修復（Thermal treatment and interface repair）", "what_zh": "利用退火改善材料介面與缺陷狀態。", "why_zh": "介面缺陷會降低遷移率並提高漏電，因此必須嚴格控制。", "what_en": "Anneal the structure to improve interfaces and reduce defects.", "why_en": "Interface quality strongly affects mobility, leakage, and reliability."}, {"name": "電性量測（Electrical characterization）", "what_zh": "量測 Vt、漏電、驅動電流與元件變異。", "why_zh": "確認閘極模組是否達到效能與功耗目標。", "what_en": "Measure threshold voltage, leakage, drive current, and variability.", "why_en": "Electrical testing verifies whether the gate module meets design targets."}]}, {"title": "4. 先進微影", "en": "Advanced lithography", "purpose": "將光罩上的奈米級圖形精準轉移到晶圓表面，定義後續蝕刻、植入與沉積的位置。", "tech": "EUV、DUV、多重圖形化、化學放大型光阻、光學鄰近修正與計算微影。", "metrics": ["關鍵尺寸（Critical dimension, CD）", "套刻誤差（Overlay error）", "曝光劑量與焦距（Dose and focus）", "線邊粗糙度（Line-edge roughness, LER）", "隨機缺陷率（Stochastic defect rate）"], "materials": ["EUV/DUV 光阻", "顯影液", "底層材料", "光罩", "Pellicle", "清洗溶劑"], "equipment": ["曝光機", "塗佈顯影軌道", "光罩寫入設備", "光罩檢查設備", "計算微影軟體"], "risks": ["隨機缺陷", "圖形塌陷", "套刻偏差", "光罩缺陷", "光阻殘留"], "chain": [["特殊聚合物", "石英", "錫", "稀有金屬", "氟化學品"], ["光阻", "顯影液", "底層材料", "Mask blank", "Pellicle"], ["EUV 光源", "反射鏡", "雷射", "晶圓平台", "真空系統"], ["Scanner", "Track", "Mask writer", "Mask inspection"], ["Lithography cell", "Mask shop", "Patterning integration"], ["GAA", "SRAM", "BEOL", "HBM base die"]], "companies": [["光學材料與聚合物原料商"], ["JSR", "TOK", "Fujifilm", "DuPont", "Shin-Etsu Chemical"], ["Cymer", "Zeiss ecosystem", "Precision-stage suppliers"], ["ASML", "TEL", "KLA", "Lasertec"], ["Foundry", "Memory IDM", "Mask manufacturers"], ["Logic", "DRAM", "NAND", "Advanced packaging RDL"]], "flow": [{"name": "光阻塗佈（Photoresist coating）", "what_zh": "在晶圓表面旋塗均勻光阻薄膜。", "why_zh": "光阻厚度與均勻度會直接影響曝光解析度與圖形品質。", "what_en": "Coat the wafer with a uniform photoresist film.", "why_en": "Resist thickness uniformity is critical to pattern fidelity."}, {"name": "軟烘烤（Soft bake）", "what_zh": "移除光阻中的部分溶劑並穩定薄膜。", "why_zh": "避免光阻在曝光與顯影時產生流動或厚度變化。", "what_en": "Bake the coated wafer to remove solvent and stabilize the film.", "why_en": "A stable resist film improves exposure consistency."}, {"name": "對準與曝光（Alignment and exposure）", "what_zh": "將光罩圖形與既有晶圓層對準，再利用 EUV 或 DUV 曝光。", "why_zh": "確保新圖形與下方結構正確重疊，避免電路斷路或短路。", "what_en": "Align the mask to existing layers and expose the resist.", "why_en": "Accurate overlay is essential for connecting multilayer structures."}, {"name": "曝光後烘烤（Post-exposure bake）", "what_zh": "促進光阻內部化學反應並控制影像形成。", "why_zh": "影響線寬、粗糙度與隨機缺陷分布。", "what_en": "Bake the resist after exposure to complete chemical reactions.", "why_en": "This step strongly influences CD, roughness, and stochastic defects."}, {"name": "顯影（Development）", "what_zh": "移除特定區域的光阻，形成可見圖形。", "why_zh": "把潛在光學影像轉變成可供蝕刻使用的實體遮罩。", "what_en": "Develop the resist to reveal the patterned image.", "why_en": "Development converts the latent image into a physical etch mask."}, {"name": "圖形檢查（Pattern inspection）", "what_zh": "量測 CD、套刻、缺陷與線邊粗糙度。", "why_zh": "在進入蝕刻前攔截錯誤，避免缺陷被永久轉移到晶圓。", "what_en": "Inspect CD, overlay, defects, and edge roughness.", "why_en": "Early inspection prevents defective patterns from being permanently etched."}]}, {"title": "5. 蝕刻與圖形轉移", "en": "Pattern transfer and etching", "purpose": "依照光阻或硬遮罩圖形，選擇性移除矽、介電層或金屬層，形成實際三維結構。", "tech": "反應式離子蝕刻、ICP、選擇性蝕刻、原子層蝕刻與濕式蝕刻。", "metrics": ["蝕刻速率（Etch rate）", "材料選擇比（Selectivity）", "側壁角度（Sidewall profile angle）", "關鍵尺寸偏移（CD bias）", "深寬比（Aspect ratio）", "電漿損傷（Plasma damage）"], "materials": ["氟系氣體", "氯系氣體", "惰性氣體", "濕式蝕刻液", "腔體清洗化學品"], "equipment": ["RIE", "ICP etcher", "Atomic layer etcher", "Wet bench", "Endpoint detection"], "risks": ["Microloading", "Notching", "殘留物", "側壁粗糙", "過度蝕刻", "電漿損傷"], "chain": [["氟氯原料", "Ar", "He", "高純度金屬"], ["電子級蝕刻氣體", "濕式化學品", "硬遮罩材料"], ["RF 電源", "Matching network", "靜電吸盤", "氣體箱", "真空泵"], ["Conductive etch", "Dielectric etch", "Selective etch", "Wet etch", "ALE"], ["Pattern-transfer module", "Chamber matching", "Advanced process control"], ["GAA", "Contact", "BEOL via", "3D NAND channel"]], "companies": [["工業氣體與鹵素原料商"], ["Air Liquide", "Linde", "Entegris", "Resonac"], ["MKS Instruments", "Advanced Energy", "Edwards", "VAT"], ["Lam Research", "TEL", "Applied Materials", "Hitachi High-Tech"], ["Logic fab", "Memory fab", "Specialty fab"], ["GAA", "DRAM", "3D NAND", "CIS"]], "flow": [{"name": "硬遮罩準備（Hard-mask preparation）", "what_zh": "使用耐蝕刻材料保護不希望被移除的區域。", "why_zh": "先進結構往往需要比光阻更高的耐蝕刻能力。", "what_en": "Prepare a durable hard mask over protected regions.", "why_en": "Hard masks survive aggressive and high-aspect-ratio etch processes."}, {"name": "主蝕刻（Main etch）", "what_zh": "利用電漿化學反應快速移除目標材料。", "why_zh": "建立溝槽、孔洞、閘極與互連結構的主要形貌。", "what_en": "Use plasma chemistry to remove the target material.", "why_en": "The main etch creates the intended three-dimensional structure."}, {"name": "過度蝕刻（Over-etch）", "what_zh": "延長少量蝕刻時間，確保所有區域完全打通。", "why_zh": "晶圓內速率並非完全一致，需要過度蝕刻補償最慢區域。", "what_en": "Continue etching briefly to clear the slowest regions.", "why_en": "Over-etch ensures complete opening across the entire wafer."}, {"name": "殘留去除（Residue removal）", "what_zh": "移除聚合物、光阻與蝕刻副產物。", "why_zh": "殘留物可能造成接觸電阻上升、短路或後續附著不良。", "what_en": "Remove polymers, resist, and etch by-products.", "why_en": "Clean surfaces are essential for reliable downstream deposition."}, {"name": "濕式清洗（Wet clean）", "what_zh": "利用選擇性化學液清除污染與受損表面。", "why_zh": "降低電漿損傷與金屬污染，恢復界面品質。", "what_en": "Use selective wet chemistry to clean damaged surfaces.", "why_en": "Wet cleaning restores surface quality after plasma exposure."}, {"name": "輪廓量測（Profile metrology）", "what_zh": "檢查深度、側壁角度、線寬與底部殘留。", "why_zh": "確認圖形已正確轉移，避免缺陷進入下一層。", "what_en": "Measure depth, sidewall angle, CD, and bottom residue.", "why_en": "Profile control ensures the pattern is ready for subsequent processing."}]}, {"title": "6. 源汲極與活化", "en": "Source, drain and activation", "purpose": "建立低電阻源極與汲極區域，控制接面深度並活化摻雜原子。", "tech": "離子植入、選擇性磊晶、快速熱退火與雷射退火。", "metrics": ["植入劑量（Implantation dose）", "植入能量（Implantation energy）", "接面深度（Junction depth）", "片電阻（Sheet resistance）", "摻雜活化率（Dopant activation rate）", "接觸電阻（Contact resistance）"], "materials": ["硼、磷、砷植入氣體", "SiGe 與 Si:C 前驅物", "載氣", "保護薄膜材料"], "equipment": ["離子植入機", "選擇性磊晶設備", "RTP", "雷射退火設備", "片電阻量測設備"], "risks": ["摻雜擴散", "晶格損傷", "磊晶缺陷", "活化不足", "接面漏電"], "chain": [["硼磷砷原料", "矽與鍺", "雷射材料"], ["植入氣體", "磊晶前驅物", "載氣", "保護層材料"], ["離子源", "Beamline", "雷射光學", "燈管", "溫度感測器"], ["Ion implanter", "Selective epitaxy", "RTP", "Laser anneal"], ["Source/drain module", "Doping integration"], ["HPC logic", "Mobile", "Analog/RF", "Memory periphery"]], "companies": [["摻雜材料與特殊氣體原料商"], ["Air Products", "Linde", "Air Liquide", "Entegris"], ["Beamline、雷射、熱控與真空零件商"], ["Axcelis", "Applied Materials", "ASM"], ["Foundry", "Logic IDM", "Memory IDM"], ["CPU", "GPU", "NPU", "Mobile SoC"]], "flow": [{"name": "摻雜區域定義（Doping-region definition）", "what_zh": "以光阻或硬遮罩限定需要摻雜的位置。", "why_zh": "避免摻雜原子進入不應導電的區域。", "what_en": "Use masks to define where dopants may enter the wafer.", "why_en": "Spatial control is essential to form correct source and drain regions."}, {"name": "離子植入或選擇性磊晶（Implantation or selective epitaxy）", "what_zh": "植入摻雜離子，或成長高濃度摻雜的外延材料。", "why_zh": "建立源汲極所需的載子濃度與應力工程。", "what_en": "Implant dopants or grow heavily doped epitaxial material.", "why_en": "This forms conductive source and drain regions and can enhance channel strain."}, {"name": "表面清洗（Surface clean）", "what_zh": "移除植入或磊晶後的污染與殘留。", "why_zh": "乾淨界面可降低後續接觸電阻與缺陷。", "what_en": "Clean residues and contamination after doping or epitaxy.", "why_en": "Surface cleanliness is critical to low-resistance contacts."}, {"name": "快速退火（Rapid thermal annealing）", "what_zh": "短時間高溫處理，活化摻雜並修復晶格。", "why_zh": "在提高活化率的同時，限制摻雜原子過度擴散。", "what_en": "Use short high-temperature annealing to activate dopants.", "why_en": "Fast annealing balances high activation with shallow junction control."}, {"name": "電阻與接面量測（Resistance and junction metrology）", "what_zh": "量測片電阻、接面深度與漏電。", "why_zh": "驗證源汲極是否同時滿足導電性與短通道控制要求。", "what_en": "Measure sheet resistance, junction depth, and leakage.", "why_en": "These measurements verify both conductivity and junction integrity."}]}, {"title": "7. 接觸與中段互連", "en": "Contacts and middle-of-line", "purpose": "把電晶體的閘極、源極與汲極連接至第一層金屬互連。", "tech": "接觸孔蝕刻、前清洗、Barrier/Liner 沉積、W、Co 或 Ru 填充與 CMP。", "metrics": ["接觸電阻（Contact resistance）", "填充空洞率（Fill-void rate）", "阻障層完整性（Barrier integrity）", "接觸孔套刻誤差（Contact alignment error）", "電遷移壽命（Electromigration lifetime）"], "materials": ["Silicide 金屬", "Barrier/Liner 前驅物", "W、Co、Ru 前驅物", "前清洗化學品", "CMP 耗材"], "equipment": ["接觸孔蝕刻機", "ALD Liner 設備", "CVD 金屬填充設備", "CMP", "電性測試設備"], "risks": ["接觸孔空洞", "接觸電阻過高", "阻障層失效", "套刻偏差", "金屬擴散"], "chain": [["W、Co、Ru、Ti 原料", "氟化學品"], ["金屬前驅物", "Barrier/Liner", "清洗化學品", "CMP 耗材"], ["前驅物輸送", "閥件", "加熱器", "RF 電源", "CMP Head"], ["High-aspect-ratio etch", "ALD/CVD metal", "Selective deposition", "CMP"], ["MOL module", "Contact integration"], ["Advanced logic", "SRAM", "Memory periphery"]], "companies": [["高純度金屬與化學原料商"], ["Merck", "Entegris", "Air Liquide"], ["真空、輸送、熱控與 CMP 零件商"], ["Applied Materials", "Lam Research", "TEL", "ASM", "Ebara"], ["Leading-edge foundry", "Logic and memory IDM"], ["HPC", "Low-power IC", "Memory products"]], "flow": [{"name": "接觸孔微影（Contact lithography）", "what_zh": "定義接觸孔與下方電晶體端點的位置。", "why_zh": "套刻精度不足會造成接觸不到或誤接其他結構。", "what_en": "Pattern contact openings above transistor terminals.", "why_en": "Overlay accuracy is critical to land on the correct device region."}, {"name": "接觸孔蝕刻（Contact-hole etching）", "what_zh": "蝕刻介電層，打通至源極、汲極或閘極。", "why_zh": "建立電晶體與金屬互連之間的垂直通道。", "what_en": "Etch through dielectric material to expose device terminals.", "why_en": "This creates the vertical path from the transistor to metal wiring."}, {"name": "前清洗（Pre-clean）", "what_zh": "移除氧化層、殘留物與表面污染。", "why_zh": "任何界面污染都可能顯著增加接觸電阻。", "what_en": "Remove native oxide and residues before metal deposition.", "why_en": "A clean interface is essential to achieve low contact resistance."}, {"name": "阻障層與襯層沉積（Barrier and liner deposition）", "what_zh": "沉積極薄阻障層與成核層。", "why_zh": "避免金屬擴散，同時協助後續材料均勻填充。", "what_en": "Deposit thin barrier and liner films.", "why_en": "These layers prevent diffusion and enable reliable metal fill."}, {"name": "金屬填充（Metal fill）", "what_zh": "以 W、Co 或 Ru 填滿高深寬比接觸孔。", "why_zh": "形成低電阻且無空洞的垂直接點。", "what_en": "Fill contact holes with conductive metal.", "why_en": "Void-free metal fill creates a reliable electrical connection."}, {"name": "CMP 與電性驗證（CMP and electrical verification）", "what_zh": "去除表面多餘金屬並量測接觸電阻。", "why_zh": "隔離個別接點並確認連線品質。", "what_en": "Remove excess metal and measure contact resistance.", "why_en": "This isolates individual contacts and verifies electrical performance."}]}, {"title": "8. 後段多層互連", "en": "Back-end-of-line interconnect", "purpose": "建立多層金屬線、電源網路與訊號互連，把數十億顆電晶體連接成完整電路。", "tech": "Low-k 介電材料、雙鑲嵌、Cu/Co/Ru 金屬化、電鍍、CMP 與多層重複堆疊。", "metrics": ["金屬線電阻（Line resistance）", "導通孔電阻（Via resistance）", "寄生電容（Parasitic capacitance）", "RC 延遲（RC delay）", "電遷移可靠度（Electromigration reliability）", "介電層崩潰壽命（Time-dependent dielectric breakdown, TDDB）"], "materials": ["Low-k 前驅物", "Cu、Co、Ru 材料", "Barrier/Liner", "電鍍液", "CMP 研磨液與拋光墊"], "equipment": ["CVD/ALD", "PVD", "介電層蝕刻機", "電鍍設備", "CMP", "互連量測設備"], "risks": ["金屬空洞", "Dishing", "Low-k 損傷", "電遷移", "TDDB", "Via open"], "chain": [["Cu、Co、Ru 原料", "有機矽原料", "研磨料"], ["Low-k 前驅物", "金屬靶材與前驅物", "電鍍液", "CMP Slurry/Pad"], ["電鍍槽", "PVD 靶材模組", "RF 電源", "CMP Head", "化學品輸送"], ["Deposition", "Etch", "Plating", "CMP", "Metrology"], ["BEOL module", "Interconnect integration", "Reliability qualification"], ["CPU/GPU routing", "SRAM", "HBM base die", "High-speed I/O"]], "companies": [["金屬、有機矽與研磨原料商"], ["DuPont", "Merck", "Entegris", "Fujimi", "CMC Materials"], ["化學輸送、RF、真空與 CMP 零件商"], ["Applied Materials", "Lam Research", "TEL", "Ebara", "KLA"], ["Foundry", "Logic IDM", "Memory IDM"], ["SoC", "Networking ASIC", "AI accelerator"]], "flow": [{"name": "介電層沉積（Dielectric deposition）", "what_zh": "沉積 Low-k 材料，作為金屬線之間的絕緣層。", "why_zh": "降低線間電容，可減少 RC 延遲與動態功耗。", "what_en": "Deposit low-k dielectric between metal lines.", "why_en": "Lower capacitance improves signal speed and energy efficiency."}, {"name": "微影與導通孔定義（Lithography and via patterning）", "what_zh": "定義金屬線與上下層連接孔的位置。", "why_zh": "決定訊號路徑、線寬與互連密度。", "what_en": "Pattern trenches and vias for the interconnect network.", "why_en": "This defines routing density and vertical connectivity."}, {"name": "溝槽與導通孔蝕刻（Trench and via etching）", "what_zh": "在介電層中形成金屬線溝槽與 Via。", "why_zh": "建立金屬互連所需的三維空間。", "what_en": "Etch trenches and vias into the dielectric.", "why_en": "The etched geometry becomes the physical wiring network."}, {"name": "阻障層與種子層（Barrier and seed deposition）", "what_zh": "沉積防擴散阻障層與電鍍種子層。", "why_zh": "避免銅擴散進入介電層，並提供連續導電表面。", "what_en": "Deposit diffusion barriers and conductive seed layers.", "why_en": "These films prevent copper contamination and enable plating."}, {"name": "金屬填充（Metal fill）", "what_zh": "以電鍍或沉積方式填滿溝槽與 Via。", "why_zh": "形成低電阻訊號線與垂直連接。", "what_en": "Fill trenches and vias with conductive metal.", "why_en": "The filled structures carry power and signals across the chip."}, {"name": "CMP 與多層重複（CMP and layer repetition）", "what_zh": "去除表面多餘金屬，再重複建造下一層互連。", "why_zh": "先進晶片可能需要十多層以上金屬，因此每層均勻度與缺陷必須嚴格控制。", "what_en": "Planarize the surface and repeat the process for additional metal layers.", "why_en": "Layer-by-layer repetition builds the complete interconnect hierarchy."}]}, {"title": "9. 量測、測試與良率", "en": "Metrology, test and yield management", "purpose": "透過量測、缺陷檢查、晶圓測試與資料分析形成閉環控制，持續改善製程與良率。", "tech": "光學與電子束檢查、CD/Overlay 量測、參數測試、Wafer sort、失效分析與 SPC。", "metrics": ["缺陷密度（Defect density）", "晶圓良率（Wafer yield）", "關鍵尺寸準確度（CD accuracy）", "套刻誤差（Overlay error）", "測試涵蓋率（Test coverage）", "誤判率（False-alarm rate）", "漏測率（Test escape rate）"], "materials": ["校正晶圓", "探針卡", "Load board", "測試 Socket", "清潔耗材"], "equipment": ["光學檢查機", "電子束檢查機", "CD-SEM", "Prober", "ATE", "失效分析設備"], "risks": ["誤判", "漏測", "取樣偏差", "探針損傷", "測試資料延遲", "缺陷分類錯誤"], "chain": [["特殊金屬", "陶瓷", "光學玻璃", "電子元件"], ["校正標準件", "探針材料", "探針卡基板", "Load board", "Socket"], ["光學模組", "電子源", "精密平台", "RF/Power 模組", "測試接觸器"], ["Inspection", "Metrology", "Prober", "ATE", "Yield analytics"], ["Inline control", "Wafer sort", "Failure analysis"], ["Known-good die", "Advanced packaging", "Modules"]], "companies": [["精密材料與電子元件供應商"], ["Probe-card、socket、substrate、calibration suppliers"], ["光學、運動、RF 與精密平台商"], ["KLA", "Applied Materials", "Hitachi High-Tech", "Advantest", "Teradyne"], ["Foundry yield engineering", "IDM test operations"], ["OSAT", "Module house", "OEM"]], "flow": [{"name": "線上製程量測（Inline metrology）", "what_zh": "在各站點量測膜厚、CD、Overlay 與材料性質。", "why_zh": "提供快速回饋，讓設備與配方在偏移擴大前修正。", "what_en": "Measure film thickness, CD, overlay, and material properties inline.", "why_en": "Fast feedback prevents small process shifts from becoming major yield losses."}, {"name": "缺陷檢查（Defect inspection）", "what_zh": "利用光學或電子束找出顆粒、刮傷與圖形異常。", "why_zh": "缺陷位置與類型可協助判斷問題來自哪一站設備或材料。", "what_en": "Detect particles, scratches, and pattern anomalies.", "why_en": "Defect signatures help trace problems back to specific tools or materials."}, {"name": "參數監控（Parametric monitoring）", "what_zh": "量測測試結構的電阻、電容、漏電與臨界電壓。", "why_zh": "確認製程變化是否已影響元件電性。", "what_en": "Measure resistance, capacitance, leakage, and threshold voltage on test structures.", "why_en": "Electrical monitors reveal whether process shifts affect device behavior."}, {"name": "晶圓測試（Wafer sort）", "what_zh": "使用探針卡與 ATE 測試每顆晶粒的功能與速度。", "why_zh": "辨識良品與不良品，避免昂貴封裝資源浪費在壞晶粒上。", "what_en": "Test each die using probe cards and automated test equipment.", "why_en": "Wafer sort prevents defective dies from entering costly packaging steps."}, {"name": "失效分析（Failure analysis）", "what_zh": "針對異常晶粒進行電性定位、切片與材料分析。", "why_zh": "找出真正根因，而不是只看到良率下降的表面現象。", "what_en": "Analyze failed dies through electrical localization and physical inspection.", "why_en": "Failure analysis converts yield symptoms into actionable root causes."}, {"name": "製程回饋與放行（Process feedback and release）", "what_zh": "把量測與測試結果回饋至製程控制，並放行合格晶粒。", "why_zh": "形成持續改善閉環，讓良率、品質與成本同步最佳化。", "what_en": "Feed results back into process control and release known-good dies.", "why_en": "The closed loop drives continuous improvement in yield, quality, and cost."}]}], "pk": [{"title": "1. 晶圓薄化與暫時鍵合", "en": "Wafer thinning and temporary bonding", "purpose": "降低晶圓或晶粒厚度，支援 TSV、3D 堆疊與封裝高度要求，同時利用載板維持機械強度。", "tech": "暫時鍵合、背面研磨、精拋、濕式清洗與 Debond。", "metrics": ["最終晶圓厚度（Final wafer thickness）", "總厚度變異（Total thickness variation, TTV）", "晶圓翹曲（Wafer warpage）", "背面損傷深度（Backside damage depth）", "崩邊率（Edge-chipping rate）", "解鍵合良率（Debond yield）"], "materials": ["暫時鍵合膠", "玻璃或矽載板", "背磨膠帶", "研磨輪", "CMP 研磨液"], "equipment": ["Temporary bonder/debonder", "Back grinder", "Polisher", "清洗設備", "厚度與翹曲量測設備"], "risks": ["晶圓破裂", "過度翹曲", "背面損傷", "膠材殘留", "解鍵合損傷"], "chain": [["玻璃", "矽", "聚合物", "研磨料"], ["Temporary adhesive", "Carrier wafer", "Backgrind tape", "Slurry"], ["主軸", "吸盤", "加熱器", "真空模組", "厚度感測器"], ["Bonder/debonder", "Grinder", "Polisher", "Metrology"], ["Wafer-level packaging", "HBM/3D preparation"], ["HBM", "Chiplet", "CIS stack", "3D memory"]], "companies": [["玻璃、聚合物與研磨原料商"], ["Brewer Science", "TOK", "Shin-Etsu Chemical"], ["精密主軸、真空與熱控供應商"], ["DISCO", "EV Group", "SUSS MicroTec"], ["Foundry packaging", "OSAT", "Memory IDM"], ["HBM", "2.5D/3D", "Stacked sensors"]], "flow": [{"name": "暫時鍵合（Temporary bonding）", "what_zh": "將產品晶圓黏合到較厚的載板上。", "why_zh": "薄化後晶圓非常脆弱，載板可在研磨與搬運時提供支撐。", "what_en": "Bond the product wafer to a rigid carrier.", "why_en": "The carrier protects the fragile wafer during thinning and handling."}, {"name": "粗磨（Coarse grinding）", "what_zh": "快速移除大部分矽厚度。", "why_zh": "以高移除率將晶圓接近目標厚度，降低整體加工時間。", "what_en": "Remove most of the silicon using coarse grinding.", "why_en": "High removal rate makes the thinning process economically practical."}, {"name": "精磨與拋光（Fine grinding and polishing）", "what_zh": "降低表面粗糙度並移除粗磨造成的損傷層。", "why_zh": "殘留微裂痕可能在後續熱循環中擴展，造成晶圓破裂。", "what_en": "Reduce roughness and remove grinding-induced damage.", "why_en": "Damage removal is essential to mechanical reliability."}, {"name": "清洗與厚度量測（Cleaning and thickness metrology）", "what_zh": "清除研磨顆粒，量測厚度、TTV 與翹曲。", "why_zh": "確保晶圓可符合後續 TSV Reveal 或堆疊規格。", "what_en": "Clean the wafer and measure thickness, TTV, and warpage.", "why_en": "Metrology confirms readiness for TSV reveal or stacking."}, {"name": "解鍵合（Debonding）", "what_zh": "從載板分離已薄化晶圓並去除殘膠。", "why_zh": "需要在不造成裂片、翹曲或表面污染的前提下完成分離。", "what_en": "Separate the thinned wafer from the carrier and remove adhesive residue.", "why_en": "Debonding must preserve both mechanical integrity and surface cleanliness."}]}, {"title": "2. TSV 形成與露銅", "en": "TSV formation and reveal", "purpose": "建立穿越矽基板的垂直電性通道，連接不同晶粒或晶圓層。", "tech": "深矽蝕刻、絕緣層沉積、Barrier/Seed、銅電鍍、CMP 與背面露銅。", "metrics": ["TSV 深寬比（TSV aspect ratio）", "孔洞輪廓（Via profile）", "銅填充空洞率（Copper-fill void rate）", "TSV 電阻（TSV resistance）", "絕緣漏電（Isolation leakage）", "銅突出高度（Copper protrusion）"], "materials": ["深矽蝕刻氣體", "絕緣層前驅物", "Barrier/Seed 材料", "銅電鍍液", "CMP 耗材"], "equipment": ["Deep silicon etcher", "CVD/ALD liner equipment", "PVD seed equipment", "Electroplating equipment", "CMP", "Reveal metrology"], "risks": ["銅填充空洞", "側壁絕緣破壞", "銅突出", "矽裂紋", "TSV 電阻過高"], "chain": [["銅", "氟化氣體", "有機矽", "研磨原料"], ["TSV 蝕刻氣體", "Liner precursor", "Barrier/Seed", "電鍍液"], ["RF 電源", "電鍍槽", "真空泵", "電極", "CMP Head"], ["DRIE", "Liner deposition", "PVD", "Electroplating", "CMP"], ["TSV module", "Interposer line", "HBM wafer process"], ["HBM", "Silicon interposer", "3D IC", "CIS/MEMS"]], "companies": [["銅、氣體與化學原料商"], ["Entegris", "Merck", "DuPont", "JSR"], ["RF、真空、電鍍與 CMP 零件商"], ["Lam Research", "Applied Materials", "TEL", "Ebara", "EV Group"], ["TSMC", "Samsung", "Intel", "ASE", "Amkor", "Memory IDM"], ["2.5D package", "HBM", "3D IC"]], "flow": [{"name": "TSV 孔洞定義（TSV patterning）", "what_zh": "利用微影定義垂直通孔的位置與直徑。", "why_zh": "TSV 密度與對位精度會影響可用 I/O 數量與晶粒面積。", "what_en": "Pattern the locations and diameters of TSV openings.", "why_en": "TSV density and alignment determine vertical interconnect capability."}, {"name": "深矽蝕刻（Deep silicon etching）", "what_zh": "以 DRIE 在矽中形成高深寬比孔洞。", "why_zh": "需要維持垂直側壁與均勻深度，否則後續填充容易失敗。", "what_en": "Etch deep, high-aspect-ratio holes into silicon.", "why_en": "Vertical profiles and uniform depth are critical to reliable filling."}, {"name": "絕緣層沉積（Insulation-liner deposition）", "what_zh": "在 TSV 側壁形成介電絕緣層。", "why_zh": "避免銅導體直接接觸矽，造成漏電與元件干擾。", "what_en": "Deposit a dielectric liner along TSV sidewalls.", "why_en": "The liner electrically isolates copper from the silicon substrate."}, {"name": "阻障層與種子層（Barrier and seed deposition）", "what_zh": "沉積防擴散層與連續金屬種子層。", "why_zh": "阻止銅擴散，同時提供電鍍所需導電路徑。", "what_en": "Deposit diffusion barriers and a conductive seed layer.", "why_en": "These layers prevent copper diffusion and enable electroplating."}, {"name": "銅填充與 CMP（Copper fill and CMP）", "what_zh": "以電鍍填滿 TSV，再去除表面多餘銅。", "why_zh": "形成低電阻且無空洞的垂直導體。", "what_en": "Electroplate copper into TSVs and remove overburden by CMP.", "why_en": "Void-free copper fill creates a low-resistance vertical connection."}, {"name": "背面露銅與檢查（Backside reveal and inspection）", "what_zh": "從背面薄化至 TSV 銅端露出，並量測突出與電阻。", "why_zh": "使 TSV 可連接下一層晶粒，同時確認機械與電性完整性。", "what_en": "Thin the backside until TSV copper is exposed and inspect it.", "why_en": "Reveal prepares the TSV for stacking and verifies connection quality."}]}, {"title": "3. RDL 與中介層", "en": "Redistribution layer and interposer", "purpose": "重新排列晶片 I/O，建立晶粒、中介層、基板與其他晶粒之間的高密度互連。", "tech": "感光介電層、微影、PVD Seed、銅電鍍、蝕刻、固化與多層 RDL。", "metrics": ["線寬與線距（Line and space）", "套刻誤差（Overlay error）", "導線電阻（Trace resistance）", "介電層附著力（Dielectric adhesion）", "中介層翹曲（Interposer warpage）", "開路與短路率（Open and short rate）"], "materials": ["感光介電材料", "RDL 光阻", "銅電鍍液", "Seed layer 靶材", "清洗與蝕刻化學品"], "equipment": ["Lithography", "PVD", "Electroplating", "Etching", "Curing oven", "Inspection"], "risks": ["RDL 開路", "RDL 短路", "介電層剝離", "銅裂紋", "套刻偏差", "翹曲"], "chain": [["銅", "聚合物", "玻璃", "矽", "溶劑"], ["Photosensitive dielectric", "RDL resist", "Plating chemistry", "Seed target"], ["電鍍槽", "光學模組", "化學品輸送", "真空零件"], ["Lithography", "PVD", "Plating", "Etch", "Cure", "Inspection"], ["Fan-out", "Silicon interposer", "Glass interposer", "Panel-level packaging"], ["Chiplet", "AI package", "RF SiP", "Mobile AP"]], "companies": [["銅、聚合物與基板原料商"], ["Ajinomoto", "DuPont", "JSR", "TOK", "Resonac"], ["電鍍、光學、真空與輸送零件商"], ["Applied Materials", "Lam Research", "TEL", "SUSS MicroTec", "EV Group"], ["TSMC", "ASE", "Amkor", "JCET", "Samsung", "Intel"], ["2.5D", "Fan-out", "Chiplet", "SiP"]], "flow": [{"name": "介電層塗佈（Dielectric coating）", "what_zh": "在晶圓或中介層上形成絕緣聚合物層。", "why_zh": "隔離不同金屬層並提供機械緩衝。", "what_en": "Coat the surface with a polymer dielectric.", "why_en": "The dielectric electrically isolates metal layers and absorbs stress."}, {"name": "微影開孔（Lithographic patterning）", "what_zh": "定義 RDL 導線與 Via 的位置。", "why_zh": "圖形決定 I/O 如何從晶粒重新分配到封裝端點。", "what_en": "Pattern redistribution traces and vias.", "why_en": "The layout determines how chip I/O is rerouted across the package."}, {"name": "種子層沉積（Seed-layer deposition）", "what_zh": "沉積薄金屬層作為後續電鍍基礎。", "why_zh": "沒有連續種子層，銅線容易出現空洞或斷路。", "what_en": "Deposit a thin conductive seed layer.", "why_en": "A continuous seed layer is required for uniform copper plating."}, {"name": "銅電鍍（Copper electroplating）", "what_zh": "依照光阻圖形增厚銅導線與 Via。", "why_zh": "形成低電阻、高密度的封裝互連。", "what_en": "Electroplate copper traces and vias.", "why_en": "Copper plating creates dense, low-resistance package wiring."}, {"name": "光阻移除與種子層蝕刻（Resist strip and seed etch）", "what_zh": "移除光阻及未被銅覆蓋的種子層。", "why_zh": "分離相鄰導線，避免短路。", "what_en": "Strip the resist and etch exposed seed metal.", "why_en": "This electrically isolates adjacent redistribution traces."}, {"name": "介電層固化與檢查（Dielectric cure and inspection）", "what_zh": "固化聚合物並檢查線寬、附著與開短路。", "why_zh": "確保 RDL 可承受後續鍵合、熱循環與板級使用。", "what_en": "Cure the dielectric and inspect dimensions and continuity.", "why_en": "Qualification ensures the RDL survives assembly and thermal cycling."}]}, {"title": "4. 凸塊與微凸塊", "en": "Bumps and micro-bumps", "purpose": "建立晶粒對基板或晶粒對晶粒的電性與機械接點。", "tech": "UBM、銅柱、錫銀焊料電鍍、Reflow 與共平面度控制。", "metrics": ["凸塊間距（Bump pitch）", "凸塊高度（Bump height）", "共平面度（Coplanarity）", "接點電阻（Joint resistance）", "空洞率（Void rate）", "剪切強度（Shear strength）"], "materials": ["UBM 靶材", "銅電鍍液", "錫銀焊料", "Flux", "Bump photoresist"], "equipment": ["PVD", "Lithography", "Plating tool", "Reflow oven", "Bump inspection"], "risks": ["Non-wet", "Solder bridge", "空洞", "高度不均", "介金屬化合物過度成長"], "chain": [["銅", "錫", "銀", "鎳", "助焊劑原料"], ["UBM target", "Plating bath", "Solder alloy", "Flux", "Bump resist"], ["電鍍電極", "加熱器", "噴嘴", "視覺系統", "精密平台"], ["PVD", "Lithography", "Electroplating", "Reflow", "Inspection"], ["Wafer bumping", "Flip-chip assembly", "HBM micro-bump"], ["FC-BGA", "HBM", "Chiplet", "Mobile/RF"]], "companies": [["高純度金屬與焊料原料商"], ["焊料、電鍍液、光阻與 Flux 供應商"], ["運動、視覺、熱控與電鍍零件商"], ["Bumping、plating 與 inspection equipment suppliers"], ["OSAT", "Foundry packaging", "Memory IDM"], ["AI/HPC", "Mobile", "Networking", "Automotive"]], "flow": [{"name": "UBM 沉積（Under-bump metallization）", "what_zh": "在晶片 Pad 上形成附著層、阻障層與可焊接金屬層。", "why_zh": "UBM 是晶片鋁或銅 Pad 與凸塊材料之間的關鍵界面。", "what_en": "Deposit adhesion, barrier, and solderable metal layers on the pad.", "why_en": "UBM provides the critical interface between chip pads and bump materials."}, {"name": "光阻成形（Bump-resist patterning）", "what_zh": "利用厚光阻定義凸塊的位置與直徑。", "why_zh": "決定每個接點的 Pitch、尺寸與共平面度基礎。", "what_en": "Pattern thick resist molds for bump locations.", "why_en": "The resist mold defines bump dimensions and pitch."}, {"name": "銅柱或焊料電鍍（Copper-pillar or solder plating）", "what_zh": "在開孔內電鍍銅柱與焊料。", "why_zh": "建立主要導電路徑與機械接合體。", "what_en": "Electroplate copper pillars and solder into the resist openings.", "why_en": "The plated structure carries current and supports the joint mechanically."}, {"name": "光阻與種子層移除（Resist and seed removal）", "what_zh": "移除光阻並蝕刻裸露種子層。", "why_zh": "讓每個凸塊彼此電性隔離。", "what_en": "Strip the resist and remove exposed seed metal.", "why_en": "This isolates individual bumps electrically."}, {"name": "回焊成形（Reflow formation）", "what_zh": "加熱焊料使其熔融並形成穩定球形接點。", "why_zh": "改善表面張力、自對準能力與接合可靠度。", "what_en": "Melt the solder to form stable rounded joints.", "why_en": "Reflow improves self-alignment and solder-joint integrity."}, {"name": "外觀與電性檢查（Visual and electrical inspection）", "what_zh": "檢查高度、橋接、空洞與接點電阻。", "why_zh": "在堆疊前攔截可能導致整體封裝失效的接點缺陷。", "what_en": "Inspect bump height, bridging, voids, and resistance.", "why_en": "Early detection prevents defective joints from compromising the full package."}]}, {"title": "5. 晶粒鍵合與混合鍵合", "en": "Die bonding and hybrid bonding", "purpose": "以高精度將晶粒、晶圓或記憶體層堆疊並連接，形成高頻寬、高密度異質整合。", "tech": "Flip-chip、Thermal Compression、TC-NCF、Die-to-Wafer 與 Cu-Cu Hybrid Bonding。", "metrics": ["對位誤差（Alignment error）", "鍵合間距（Bond pitch）", "鍵合強度（Bond strength）", "界面空洞率（Interface void rate）", "接點電阻（Interconnect resistance）", "鍵合產能（Bonding throughput）"], "materials": ["NCF/NCP", "Flux", "銅表面清洗化學品", "DAF", "表面活化氣體"], "equipment": ["Flip-chip bonder", "Thermal-compression bonder", "Hybrid bonder", "Plasma activation equipment", "Bond inspection"], "risks": ["晶粒偏移", "顆粒造成空洞", "鍵合界面氧化", "熱損傷", "翹曲造成接觸不均"], "chain": [["銅", "聚合物", "溶劑", "高純度氣體"], ["NCF/NCP", "Surface activation chemistry", "DAF", "Cleaner"], ["精密平台", "Bond head", "光學對位模組", "力感測器", "熱控模組"], ["Flip-chip bonder", "TC bonder", "Hybrid bonder", "Plasma", "Inspection"], ["HBM stacking", "Chiplet attach", "Wafer-to-wafer", "Die-to-wafer"], ["HBM", "3D logic", "CIS stack", "Heterogeneous integration"]], "companies": [["銅、聚合物與特殊化學原料商"], ["Resonac", "Namics", "Henkel", "DuPont"], ["精密平台、光學、力控與熱控商"], ["BESI", "ASMPT", "EV Group", "SUSS MicroTec"], ["Memory IDM", "TSMC", "Intel", "OSAT"], ["HBM", "Chiplet", "3D SoC", "Sensor stack"]], "flow": [{"name": "表面清洗（Surface cleaning）", "what_zh": "移除銅氧化物、有機物與微粒。", "why_zh": "混合鍵合間距極小，一顆微粒就可能造成多個接點失效。", "what_en": "Remove copper oxide, organics, and particles.", "why_en": "At fine bond pitch, a single particle can disrupt multiple interconnects."}, {"name": "表面活化（Surface activation）", "what_zh": "利用電漿或化學方式提高表面反應性。", "why_zh": "讓介電層或銅在較低溫度下形成穩定鍵結。", "what_en": "Activate bonding surfaces using plasma or chemistry.", "why_en": "Activation enables strong bonding at lower temperature."}, {"name": "晶粒拾取與對位（Die pick and alignment）", "what_zh": "拾取良品晶粒，利用高精度視覺對準接點。", "why_zh": "對位誤差必須遠小於接點 Pitch，否則會產生開路或短路。", "what_en": "Pick known-good dies and align interconnects precisely.", "why_en": "Alignment accuracy must remain well below the bond pitch."}, {"name": "預鍵合（Pre-bonding）", "what_zh": "讓晶粒與目標表面初步接觸並固定位置。", "why_zh": "防止後續加熱與加壓過程中產生 Die shift。", "what_en": "Bring surfaces into initial contact and secure their position.", "why_en": "Pre-bonding minimizes die shift during final bonding."}, {"name": "熱壓或退火鍵合（Thermal-compression or anneal bonding）", "what_zh": "施加溫度、壓力或退火，使金屬與介電界面完成鍵合。", "why_zh": "建立低電阻、具機械強度且可承受熱循環的永久接點。", "what_en": "Apply heat, pressure, or annealing to complete the bond.", "why_en": "The final bond must provide low resistance and mechanical durability."}, {"name": "界面檢查（Bond-interface inspection）", "what_zh": "利用聲學、X-ray 或電性方法檢查空洞與未接合區。", "why_zh": "鍵合缺陷通常被埋在堆疊內部，必須使用非破壞方法提早發現。", "what_en": "Inspect buried interfaces using acoustic, X-ray, or electrical methods.", "why_en": "Non-destructive inspection is essential because defects are hidden inside the stack."}]}, {"title": "6. 底填、模封與基板整合", "en": "Underfill, molding and substrate integration", "purpose": "保護晶粒與接點、分散熱機械應力，並將晶粒組件整合到封裝基板與散熱結構。", "tech": "Capillary underfill、MUF、NCF、Transfer molding、基板貼合、TIM 與 Lid attach。", "metrics": ["底填空洞率（Underfill void rate）", "固化曲線（Cure profile）", "熱膨脹係數失配（CTE mismatch）", "封裝翹曲（Package warpage）", "分層率（Delamination rate）", "吸濕敏感等級（Moisture sensitivity level, MSL）"], "materials": ["Underfill", "Mold compound", "ABF substrate", "Solder ball", "TIM", "Metal lid"], "equipment": ["Dispenser", "Molding press", "Vacuum cure oven", "Plasma cleaner", "Substrate attach equipment", "Warpage metrology"], "risks": ["底填空洞", "界面分層", "封裝翹曲", "樹脂裂紋", "吸濕爆米花效應", "TIM 空洞"], "chain": [["Epoxy", "Silica filler", "Copper foil", "Glass fiber", "Metal lid material"], ["Underfill", "Mold compound", "ABF", "Coreless substrate", "TIM"], ["Pump", "Mold chase", "Vacuum module", "Curing oven", "Thermal plate"], ["Dispensing", "Molding", "Curing", "Plasma cleaning", "Attach", "Inspection"], ["OSAT assembly", "Substrate integration", "Package completion"], ["AI module", "Server board", "Network switch", "Automotive ECU"]], "companies": [["Epoxy、silica、copper foil、glass fiber suppliers"], ["Ajinomoto", "Resonac", "Namics", "Henkel"], ["Dispensing、vacuum、molding、thermal subsystem suppliers"], ["ASMPT", "TOWA", "Nordson"], ["ASE", "Amkor", "JCET", "Foundry packaging", "Memory IDM"], ["GPU module", "CPU package", "Switch ASIC", "Automotive module"]], "flow": [{"name": "表面預處理（Surface preparation）", "what_zh": "以清洗或電漿處理改善封裝表面的潔淨度與潤濕性。", "why_zh": "有助於底填與模封材料均勻流動並牢固附著。", "what_en": "Clean or plasma-treat package surfaces.", "why_en": "Surface preparation improves wetting and adhesion of encapsulation materials."}, {"name": "底填或 NCF 填充（Underfill or NCF application）", "what_zh": "在晶粒與基板間填入聚合物。", "why_zh": "分散焊點承受的熱應力，提升溫度循環壽命。", "what_en": "Fill the gap between die and substrate with polymer material.", "why_en": "Underfill redistributes thermomechanical stress away from solder joints."}, {"name": "模封（Molding）", "what_zh": "使用環氧樹脂包覆晶粒、接點與部分基板。", "why_zh": "提供機械保護、防潮與污染隔離。", "what_en": "Encapsulate the assembly with molding compound.", "why_en": "Molding protects the package from mechanical and environmental damage."}, {"name": "真空固化（Vacuum curing）", "what_zh": "在控制溫度與真空條件下完成樹脂交聯。", "why_zh": "降低氣泡與空洞，並建立穩定機械性質。", "what_en": "Cure the polymer under controlled temperature and vacuum.", "why_en": "Proper curing minimizes voids and stabilizes material properties."}, {"name": "基板與焊球整合（Substrate and solder-ball integration）", "what_zh": "將封裝連接至 ABF 基板，並形成板級焊球。", "why_zh": "把晶片內部高密度 I/O 轉換成系統板可使用的介面。", "what_en": "Attach the package to the substrate and form board-level solder balls.", "why_en": "The substrate converts dense die I/O into a system-compatible interface."}, {"name": "散熱結構與翹曲檢查（Thermal solution and warpage inspection）", "what_zh": "安裝 TIM 與金屬 Lid，並量測封裝翹曲與分層。", "why_zh": "高功率 AI 封裝需同時滿足散熱與機械平整度要求。", "what_en": "Attach thermal interface materials and inspect package warpage.", "why_en": "High-power packages must balance heat removal and mechanical flatness."}]}, {"title": "7. 切割、最終測試與可靠度", "en": "Singulation, final test and reliability", "purpose": "將封裝分離成單顆產品，完成電性、功能、速度、功耗、熱與長期可靠度驗證。", "tech": "刀片、雷射或電漿切割、ATE、Handler、Burn-in、System-level test、X-ray 與 SAM。", "metrics": ["切割道寬度（Kerf width）", "崩邊率（Chipping rate）", "測試涵蓋率（Test coverage）", "測試產能（Units per hour, UPH）", "接觸電阻（Contact resistance）", "漏測率（Test escape rate）", "燒機失效率（Burn-in failure rate）"], "materials": ["Dicing tape", "Diamond blade", "Test socket", "Load board", "Burn-in board", "Thermal-interface consumables"], "equipment": ["Blade dicer", "Laser dicer", "Plasma dicing", "ATE", "Handler", "Burn-in system", "X-ray/SAM"], "risks": ["邊緣裂紋", "封裝崩邊", "Socket 磨損", "測試漏失", "過度熱應力", "測試時間過長"], "chain": [["鑽石", "陶瓷", "銅合金", "電子元件"], ["Dicing tape", "Blade", "Socket material", "Load board", "Burn-in board"], ["精密平台", "視覺模組", "RF/Power 模組", "Socket", "Thermal chamber"], ["Dicing", "Pick and place", "ATE", "Handler", "Burn-in", "Failure analysis"], ["OSAT final test", "Memory test", "System-level test", "Quality release"], ["Cloud server", "PC", "Smartphone", "Vehicle", "Industrial system"]], "companies": [["鑽石、陶瓷、銅合金與電子元件商"], ["Probe、socket、board、dicing consumable suppliers"], ["精密運動、視覺、RF 與熱控商"], ["DISCO", "Advantest", "Teradyne", "Cohu"], ["ASE", "Amkor", "JCET", "PTI", "Memory IDM"], ["Cloud", "PC", "Phone", "Automotive", "Industrial"]], "flow": [{"name": "封裝切割（Package singulation）", "what_zh": "以刀片、雷射或電漿將封裝面板分離成單顆產品。", "why_zh": "需要控制裂紋與崩邊，避免損傷內部 RDL、基板或晶粒。", "what_en": "Separate packages using blade, laser, or plasma dicing.", "why_en": "Singulation must avoid cracks that could damage internal structures."}, {"name": "外觀與結構檢查（Visual and structural inspection）", "what_zh": "檢查尺寸、翹曲、裂紋、焊球與封裝表面。", "why_zh": "先排除機械缺陷，再進入成本較高的電性測試。", "what_en": "Inspect dimensions, warpage, cracks, and solder balls.", "why_en": "Mechanical screening prevents obviously defective units from consuming test capacity."}, {"name": "最終電性測試（Final electrical test）", "what_zh": "利用 ATE 與 Handler 測試功能、頻率、功耗與 I/O。", "why_zh": "確認封裝後晶片仍符合產品規格，並進行速度或功耗分級。", "what_en": "Use ATE and handlers to verify function, speed, power, and I/O.", "why_en": "Final test confirms product specifications and supports performance binning."}, {"name": "燒機測試（Burn-in）", "what_zh": "在高溫與電壓應力下運行產品。", "why_zh": "加速暴露早期失效，降低產品交付後的故障率。", "what_en": "Operate devices under elevated temperature and voltage stress.", "why_en": "Burn-in screens latent defects that might otherwise fail early in the field."}, {"name": "可靠度驗證（Reliability qualification）", "what_zh": "進行溫度循環、濕熱、機械與壽命測試。", "why_zh": "模擬產品長期使用環境，確認封裝材料與接點耐久性。", "what_en": "Perform thermal cycling, humidity, mechanical, and lifetime tests.", "why_en": "Qualification demonstrates long-term package durability."}, {"name": "失效分析與出貨放行（Failure analysis and release）", "what_zh": "分析測試不良品並建立批次品質判定。", "why_zh": "將根因回饋至製程，同時確保只有合格產品進入系統端。", "what_en": "Analyze failed units and release qualified lots for shipment.", "why_en": "The final feedback loop protects customers and improves future manufacturing."}]}]};
+    const headers = [["基礎原料", "Raw resources"], ["電子級材料", "Electronic-grade materials"], ["關鍵零組件", "Critical subsystems"], ["製程設備", "Process equipment"], ["製造環節", "Manufacturing stage"], ["下游產品", "Downstream products"]];
+
+    let family = "ap";
+    let selectedIndex = 0;
+
+    const el = (id) => document.getElementById(id);
+
+    function listHtml(items) {
+      return `<ul>${items.map((item) => `<li>${item}</li>`).join("")}</ul>`;
+    }
+
+    function renderStepButtons() {
+      const rows = data[family];
+      const container = el("steps");
+      container.innerHTML = "";
+
+      rows.forEach((item, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "step-btn" + (index === selectedIndex ? " active" : "");
+        button.innerHTML = `<strong>${item.title}</strong><span>${item.en}</span>`;
+        button.addEventListener("click", () => {
+          selectedIndex = index;
+          render();
+        });
+        container.appendChild(button);
+      });
+    }
+
+    function renderSummary(row) {
+      el("title").textContent = row.title;
+      el("subtitle").textContent = row.en;
+      el("badge").textContent = family === "ap" ? "Advanced Process · 9" : "Advanced Packaging · 7";
+      el("purpose").textContent = row.purpose;
+      el("tech").textContent = row.tech;
+      el("metrics").innerHTML = listHtml(row.metrics);
+      el("materials").innerHTML = listHtml(row.materials);
+      el("equipment").innerHTML = listHtml(row.equipment);
+      el("risks").innerHTML = listHtml(row.risks);
+    }
+
+    function renderChain(row) {
+      const container = el("chain");
+      const showCompanies = el("toggle").checked;
+      container.innerHTML = "";
+
+      headers.forEach((header, index) => {
+        const card = document.createElement("article");
+        card.className = "chain-card";
+
+        const companyClass = showCompanies ? "company-block" : "company-block hidden";
+        card.innerHTML = `
+          <h3>${index + 1}. ${header[0]}</h3>
+          <div class="muted">${header[1]}</div>
+          ${listHtml(row.chain[index])}
+          <div class="${companyClass}">
+            <strong>代表公司／類型｜Examples</strong>
+            ${listHtml(row.companies[index])}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function renderFlow(row) {
+      const container = el("flow");
+      container.innerHTML = "";
+
+      row.flow.forEach((step, index) => {
+        const card = document.createElement("article");
+        card.className = "flow-card";
+        card.innerHTML = `
+          <div class="flow-head">
+            <span class="flow-number">${index + 1}</span>
+            <h3>${step.name}</h3>
+          </div>
+          <div class="flow-block">
+            <strong>流程做什麼｜What happens</strong>
+            <p>${step.what_zh}</p>
+            <p class="en">${step.what_en}</p>
+          </div>
+          <div class="flow-block">
+            <strong>目的與意義｜Why it matters</strong>
+            <p>${step.why_zh}</p>
+            <p class="en">${step.why_en}</p>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function render() {
+      el("apBtn").classList.toggle("active", family === "ap");
+      el("pkBtn").classList.toggle("active", family === "pk");
+
+      const row = data[family][selectedIndex];
+      renderStepButtons();
+      renderSummary(row);
+      renderChain(row);
+      renderFlow(row);
+    }
+
+    el("apBtn").addEventListener("click", () => {
+      family = "ap";
+      selectedIndex = 0;
+      render();
+    });
+
+    el("pkBtn").addEventListener("click", () => {
+      family = "pk";
+      selectedIndex = 0;
+      render();
+    });
+
+    el("toggle").addEventListener("change", () => {
+      renderChain(data[family][selectedIndex]);
+    });
+
+    render();
+  </script>
+</body>
+</html>
